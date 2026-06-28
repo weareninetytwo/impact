@@ -8,7 +8,7 @@ Mobile-accessible internal MVP for ninety two.
 |---|---|
 | **Production URL** | https://impact-rosy.vercel.app |
 | **Vercel project** | [getforge/impact](https://vercel.com/getforge/impact) |
-| **Status** | App deployed — **finish Supabase + env vars below** |
+| **Status** | Built + committed locally — **push GitHub → Supabase → Vercel** |
 
 > **Important:** Until env vars are set, the site is public (no password) and opportunities **do not persist** on Vercel. Complete Steps 0–3 below (~10 min).
 
@@ -37,15 +37,23 @@ Mobile-accessible internal MVP for ninety two.
 
 ---
 
-## Step 0 — Commit and push
+## Step 0 — Push to GitHub
+
+**Status:** Committed locally (`deploy impact v0.2`). No remote yet — do this now.
+
+1. Go to [github.com/new](https://github.com/new)
+2. Repository name: **`impact`**
+3. **Do not** add README, `.gitignore`, or license (empty repo)
+4. Create repository → copy the HTTPS URL
 
 ```bash
-git add .
-git commit -m "deploy impact v0.2"
-git push
+cd "/Users/ginobroccolo/Downloads/CURSOR/IMPACT–NINETY TWO"
+git remote add origin https://github.com/YOUR_ORG/impact.git
+git branch -M main
+git push -u origin main
 ```
 
-Connect the GitHub repo to [getforge/impact](https://vercel.com/getforge/impact) for automatic deploys on push (optional but recommended).
+Replace `YOUR_ORG` with your GitHub username or org (e.g. `getforge`).
 
 ---
 
@@ -71,30 +79,37 @@ Connect the GitHub repo to [getforge/impact](https://vercel.com/getforge/impact)
 
 ---
 
-## Step 3 — Vercel env vars + redeploy
+## Step 3 — Connect GitHub to Vercel + env vars
 
-**Already done:** Impact is deployed at https://impact-rosy.vercel.app (monorepo root + root `vercel.json`).
+### Import repo (or link existing project)
 
-**You still need:** Add env vars, then redeploy.
+1. [Vercel → Add New Project](https://vercel.com/new) → Import **`YOUR_ORG/impact`**
+   - Or link the repo to existing [getforge/impact](https://vercel.com/getforge/impact): Settings → Git → Connect
+2. **Root Directory:** `apps/agency`
+3. **Enable:** “Include source files outside of the Root Directory” (required for `@impact/db`, `@impact/shared`, `@impact/engines`)
+4. Framework: Next.js (auto-detected)
 
-### Add env vars (Dashboard)
+### Add env vars (Production)
 
-1. [Vercel → getforge/impact → Settings → Environment Variables](https://vercel.com/getforge/impact/settings/environment-variables)
-2. Add for **Production** (and Preview if you want):
+[Vercel → impact → Settings → Environment Variables](https://vercel.com/getforge/impact/settings/environment-variables)
 
-   ```
-   NEXT_PUBLIC_SUPABASE_URL=
-   NEXT_PUBLIC_SUPABASE_ANON_KEY=
-   SUPABASE_SERVICE_ROLE_KEY=
-   IMPACT_BASIC_AUTH_PASSWORD=   # strong password — 20+ chars, unique
-   ```
+```
+NEXT_PUBLIC_SUPABASE_URL=
+NEXT_PUBLIC_SUPABASE_ANON_KEY=
+SUPABASE_SERVICE_ROLE_KEY=
+IMPACT_BASIC_AUTH_PASSWORD=   # strong password — 20+ chars, unique
+```
 
-3. **Redeploy:** Deployments → latest → ⋮ → Redeploy
+### Deploy
 
-### Or via CLI
+Click **Deploy** (first Git import) or **Redeploy** after adding env vars.
+
+Production URL: **https://impact-rosy.vercel.app** (or the alias Vercel assigns).
+
+### Or via CLI (after env vars are set)
 
 ```bash
-cd "/path/to/impact"
+cd "/Users/ginobroccolo/Downloads/CURSOR/IMPACT–NINETY TWO"
 npx vercel env add NEXT_PUBLIC_SUPABASE_URL production
 npx vercel env add NEXT_PUBLIC_SUPABASE_ANON_KEY production
 npx vercel env add SUPABASE_SERVICE_ROLE_KEY production
