@@ -4,7 +4,7 @@ import type {
   OpportunityInput,
   OpportunityStage,
 } from "@impact/shared";
-import { buildDedupeKey } from "@impact/engines";
+import { buildSignalIngestDedupeKey } from "@impact/engines";
 import { isSupabasePersistenceEnabled } from "../client";
 import { buildOpportunityRecord } from "./build";
 import {
@@ -77,10 +77,10 @@ export async function getDashboardStats(): Promise<DashboardStats> {
 export async function createOpportunity(
   input: OpportunityInput,
 ): Promise<CreateResult> {
-  const key = buildDedupeKey(
+  const key = buildSignalIngestDedupeKey(
     input.company_name,
-    input.company_website,
     input.source_url,
+    input.title,
   );
 
   if (isSupabasePersistenceEnabled()) {
@@ -97,7 +97,7 @@ export async function createOpportunity(
   const items = await readOpportunities();
   const existingIndex = items.findIndex(
     (o) =>
-      buildDedupeKey(o.company_name, o.company_website, o.source_url) === key,
+      buildSignalIngestDedupeKey(o.company_name, o.source_url, o.title) === key,
   );
 
   if (existingIndex >= 0) {

@@ -1,0 +1,123 @@
+{
+  "openapi": "3.1.0",
+  "info": {
+    "title": "Impact Signal Ingest API",
+    "version": "3A.0",
+    "description": "Import opportunity-watch results from ChatGPT Custom GPT Actions or automation tools into Impact."
+  },
+  "servers": [
+    {
+      "url": "https://impact-rosy.vercel.app",
+      "description": "Production"
+    },
+    {
+      "url": "http://localhost:3000",
+      "description": "Local dev"
+    }
+  ],
+  "paths": {
+    "/api/signals/import": {
+      "post": {
+        "operationId": "importSignals",
+        "summary": "Import signal items as scored opportunities",
+        "description": "Validates JSON, dedupes by company+source_url or company+title, scores, creates source knowledge docs, and links them to opportunities.",
+        "security": [{ "bearerAuth": [] }],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/SignalIngestPayload"
+              },
+              "example": {
+                "items": [
+                  {
+                    "company_name": "Northline Health",
+                    "opportunity_title": "Website redesign RFP",
+                    "signal_type": "rfp",
+                    "signal_summary": "Regional health system seeking brand-aligned website rebuild.",
+                    "source_name": "NYSCR",
+                    "source_url": "https://example.com/rfp/northline-health",
+                    "deadline": "2026-08-15",
+                    "estimated_value": "125000",
+                    "location": "Albany, NY",
+                    "fit_notes": "Healthcare + website — strong ninety two fit",
+                    "raw_text": "Full RFP text or excerpt..."
+                  }
+                ]
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Import result counts",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SignalIngestResult"
+                }
+              }
+            }
+          },
+          "400": { "description": "Invalid payload" },
+          "401": { "description": "Missing or invalid Bearer token" },
+          "500": { "description": "Server error" }
+        }
+      }
+    }
+  },
+  "components": {
+    "securitySchemes": {
+      "bearerAuth": {
+        "type": "http",
+        "scheme": "bearer",
+        "description": "Set to IMPACT_INGEST_SECRET value from Vercel env vars"
+      }
+    },
+    "schemas": {
+      "SignalIngestPayload": {
+        "type": "object",
+        "required": ["items"],
+        "properties": {
+          "items": {
+            "type": "array",
+            "minItems": 1,
+            "maxItems": 100,
+            "items": { "$ref": "#/components/schemas/SignalIngestItem" }
+          }
+        }
+      },
+      "SignalIngestItem": {
+        "type": "object",
+        "required": ["company_name", "opportunity_title", "signal_type"],
+        "properties": {
+          "company_name": { "type": "string" },
+          "opportunity_title": { "type": "string" },
+          "signal_type": { "type": "string" },
+          "signal_summary": { "type": "string" },
+          "source_name": { "type": "string" },
+          "source_url": { "type": "string", "format": "uri" },
+          "deadline": { "type": "string" },
+          "estimated_value": { "oneOf": [{ "type": "string" }, { "type": "number" }] },
+          "location": { "type": "string" },
+          "fit_score": { "type": "number", "minimum": 0, "maximum": 100 },
+          "fit_notes": { "type": "string" },
+          "recommended_action": { "type": "string" },
+          "raw_text": { "type": "string" }
+        }
+      },
+      "SignalIngestResult": {
+        "type": "object",
+        "properties": {
+          "created": { "type": "integer" },
+          "updated": { "type": "integer" },
+          "skipped": { "type": "integer" },
+          "errors": { "type": "array", "items": { "type": "string" } },
+          "opportunity_ids": { "type": "array", "items": { "type": "string", "format": "uuid" } },
+          "knowledge_ids": { "type": "array", "items": { "type": "string", "format": "uuid" } }
+        }
+      }
+    }
+  }
+}

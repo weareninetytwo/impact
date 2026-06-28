@@ -1,6 +1,6 @@
 import type { Opportunity, OpportunityStage } from "@impact/shared";
 import { DEFAULT_TENANT_ID } from "@impact/shared";
-import { buildDedupeKey } from "@impact/engines";
+import { buildSignalIngestDedupeKey } from "@impact/engines";
 import { createServerClient } from "../client";
 
 type DbRow = {
@@ -83,10 +83,10 @@ function opportunityToRow(opp: Opportunity): Omit<DbRow, "dedupe_key"> & {
     next_action: opp.next_action,
     recommended_action: opp.recommended_action,
     notes: opp.notes,
-    dedupe_key: buildDedupeKey(
+    dedupe_key: buildSignalIngestDedupeKey(
       opp.company_name,
-      opp.company_website,
       opp.source_url,
+      opp.title,
     ),
     created_at: opp.created_at,
     updated_at: opp.updated_at,

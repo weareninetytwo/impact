@@ -1,0 +1,30 @@
+.back {
+  font-size: 0.875rem;
+  color: #64748b;
+  text-decoration: none;
+}
+
+.back:hover {
+  color: #0f172a;
+}
+
+.page {
+  max-width: 900px;
+}
+
+.header {
+  margin: 1rem 0 1.5rem;
+}
+
+.title {
+  font-size: 1.75rem;
+  font-weight: 700;
+  margin: 0 0 0.5rem;
+}
+
+.subtitle {
+  color: #64748b;
+  margin: 0;
+  font-size: 0.9375rem;
+  line-height: 1.5;
+}

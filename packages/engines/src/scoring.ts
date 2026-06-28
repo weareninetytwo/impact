@@ -218,6 +218,23 @@ export function buildDedupeKey(
   return `${name}::${url || "no-url"}`;
 }
 
+/** Epic 3A: company + source_url, or company + title when no URL */
+export function buildSignalIngestDedupeKey(
+  companyName: string,
+  sourceUrl?: string | null,
+  opportunityTitle?: string | null,
+): string {
+  if (sourceUrl?.trim()) {
+    return buildDedupeKey(companyName, null, sourceUrl);
+  }
+  const name = companyName.trim().toLowerCase().replace(/\s+/g, " ");
+  const title = (opportunityTitle ?? "")
+    .trim()
+    .toLowerCase()
+    .replace(/\s+/g, " ");
+  return `${name}::title::${title || "no-title"}`;
+}
+
 function normalizeUrl(raw: string): string {
   const trimmed = raw.trim().toLowerCase();
   if (!trimmed) return "";

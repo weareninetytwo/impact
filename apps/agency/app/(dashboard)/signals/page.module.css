@@ -1,0 +1,59 @@
+.page {
+  max-width: 900px;
+}
+
+.header {
+  margin-bottom: 1.5rem;
+}
+
+.title {
+  font-size: 1.75rem;
+  font-weight: 700;
+  margin: 0 0 0.5rem;
+}
+
+.subtitle {
+  color: #64748b;
+  margin: 0;
+}
+
+.cards {
+  display: grid;
+  gap: 1rem;
+}
+
+.card,
+.cardMuted {
+  display: block;
+  padding: 1.25rem;
+  border-radius: 8px;
+  border: 1px solid #e2e8f0;
+  text-decoration: none;
+  color: inherit;
+}
+
+.card:hover {
+  border-color: #94a3b8;
+  background: #f8fafc;
+}
+
+.cardMuted {
+  background: #f8fafc;
+  color: #64748b;
+}
+
+.cardTitle {
+  font-size: 1rem;
+  font-weight: 700;
+  margin: 0 0 0.5rem;
+}
+
+.cardBody {
+  margin: 0;
+  font-size: 0.875rem;
+  line-height: 1.5;
+}
+
+.cardBody code {
+  font-size: 0.8125rem;
+}

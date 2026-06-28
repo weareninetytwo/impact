@@ -35,3 +35,8 @@ export {
   formatKnowledgeType,
   getKnowledgeDataFilePath,
 } from "./knowledge/repository";
+export {
+  validateSignalIngestPayload,
+  validateSignalIngestItem,
+  importSignalItems,
+} from "./signals/ingest";

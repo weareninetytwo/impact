@@ -7,6 +7,13 @@ import type { NextRequest } from "next/server";
  * Remove or unset env var to disable (local dev only).
  */
 export function middleware(request: NextRequest) {
+  const path = request.nextUrl.pathname;
+
+  // Signal ingest API uses Bearer token auth (Custom GPT / automation)
+  if (path === "/api/signals/import") {
+    return NextResponse.next();
+  }
+
   const password = process.env.IMPACT_BASIC_AUTH_PASSWORD?.trim().replace(/[^\x00-\xFF]/g, "");
   if (!password) {
     return NextResponse.next();

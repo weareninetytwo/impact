@@ -1,13 +1,40 @@
 import { randomUUID } from "crypto";
 import type { Opportunity, OpportunityInput } from "@impact/shared";
 import { DEFAULT_TENANT_ID } from "@impact/shared";
-import { scoreOpportunity } from "@impact/engines";
+import { scoreOpportunity, type ScoringResult } from "@impact/engines";
+
+function clamp(n: number, min = 0, max = 100): number {
+  return Math.min(max, Math.max(min, n));
+}
+
+function totalFromScores(scored: ScoringResult): number {
+  return clamp(
+    scored.fit_score * 0.35 +
+      scored.urgency_score * 0.25 +
+      scored.value_score * 0.25 +
+      scored.confidence_score * 0.15,
+  );
+}
 
 export function buildOpportunityRecord(
   input: OpportunityInput,
   existing?: Opportunity,
+  options?: {
+    fit_score?: number;
+    recommended_action?: string;
+  },
 ): Opportunity {
   const scored = scoreOpportunity(input);
+
+  if (options?.fit_score != null && !Number.isNaN(options.fit_score)) {
+    scored.fit_score = clamp(options.fit_score);
+    scored.total_score = Math.round(totalFromScores(scored) * 10) / 10;
+  }
+
+  if (options?.recommended_action?.trim()) {
+    scored.recommended_action = options.recommended_action.trim();
+  }
+
   const now = new Date().toISOString();
 
   return {
