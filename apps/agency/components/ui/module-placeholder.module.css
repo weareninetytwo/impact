@@ -1,0 +1,35 @@
+.wrapper {
+  max-width: 960px;
+}
+
+.header {
+  margin-bottom: 1.5rem;
+}
+
+.title {
+  margin: 0 0 0.375rem;
+  font-size: 1.5rem;
+  font-weight: 700;
+  letter-spacing: -0.02em;
+  color: #0f172a;
+}
+
+.description {
+  margin: 0;
+  color: #64748b;
+  font-size: 0.9375rem;
+}
+
+.placeholder {
+  background: #fff;
+  border: 1px dashed #cbd5e1;
+  border-radius: 8px;
+  padding: 3rem 2rem;
+  text-align: center;
+}
+
+.message {
+  margin: 0;
+  color: #94a3b8;
+  font-size: 0.875rem;
+}

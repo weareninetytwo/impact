@@ -1,0 +1,17 @@
+{
+  "name": "impact",
+  "private": true,
+  "workspaces": [
+    "apps/*",
+    "packages/*"
+  ],
+  "scripts": {
+    "dev": "npm run dev --workspace=@impact/agency",
+    "build": "npm run build --workspace=@impact/agency",
+    "lint": "npm run lint --workspace=@impact/agency",
+    "typecheck": "npm run typecheck --workspaces --if-present"
+  },
+  "engines": {
+    "node": ">=20"
+  }
+}

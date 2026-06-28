@@ -1,0 +1,13 @@
+.wrap {
+  padding: 2rem 0;
+}
+
+.wrap h1 {
+  margin: 0 0 1rem;
+  font-size: 1.25rem;
+}
+
+.wrap a {
+  color: #0369a1;
+  font-size: 0.875rem;
+}

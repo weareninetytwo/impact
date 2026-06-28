@@ -1,0 +1,8 @@
+../../packages/shared/src/index.ts
+../../packages/db/src/index.ts
+../../packages/engines/src/index.ts
+../../packages/shared/**
+../../packages/db/**
+../../packages/engines/**
+../../package.json
+../../package-lock.json
