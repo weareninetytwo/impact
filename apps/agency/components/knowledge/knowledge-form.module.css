@@ -1,0 +1,54 @@
+.form {
+  background: #fff;
+  border: 1px solid #e2e8f0;
+  border-radius: 8px;
+  padding: 1.25rem;
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.label {
+  display: flex;
+  flex-direction: column;
+  gap: 0.375rem;
+  font-size: 0.8125rem;
+  font-weight: 600;
+  color: #334155;
+}
+
+.input,
+.textarea,
+.file {
+  font-weight: 400;
+  padding: 0.5rem 0.75rem;
+  border: 1px solid #cbd5e1;
+  border-radius: 6px;
+  font-size: 0.875rem;
+}
+
+.textarea {
+  font-family: inherit;
+  resize: vertical;
+}
+
+.submit {
+  align-self: flex-start;
+  padding: 0.625rem 1.25rem;
+  background: #0f172a;
+  color: #fff;
+  border: none;
+  border-radius: 6px;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.submit:disabled {
+  opacity: 0.6;
+}
+
+.error {
+  color: #b91c1c;
+  font-size: 0.875rem;
+  margin: 0;
+}

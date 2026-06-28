@@ -7,7 +7,7 @@ import type { NextRequest } from "next/server";
  * Remove or unset env var to disable (local dev only).
  */
 export function middleware(request: NextRequest) {
-  const password = process.env.IMPACT_BASIC_AUTH_PASSWORD;
+  const password = process.env.IMPACT_BASIC_AUTH_PASSWORD?.trim().replace(/[^\x00-\xFF]/g, "");
   if (!password) {
     return NextResponse.next();
   }

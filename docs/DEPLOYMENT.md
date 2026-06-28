@@ -2,17 +2,18 @@
 
 Mobile-accessible internal MVP for ninety two.
 
-## Live (partial)
+## Live
 
 | | |
 |---|---|
-| **Production URL** | https://impact-rosy.vercel.app |
+| **Production URL (Vercel)** | https://impact-rosy.vercel.app |
+| **Recommended internal URL** | https://impact.weareninetytwo.xyz |
 | **Vercel project** | [getforge/impact](https://vercel.com/getforge/impact) |
-| **Status** | Built + committed locally — **push GitHub → Supabase → Vercel** |
+| **Status** | 🟢 **v0.2 live** — mobile, cloud, Supabase, basic auth |
 
-> **Important:** Until env vars are set, the site is public (no password) and opportunities **do not persist** on Vercel. Complete Steps 0–3 below (~10 min).
+> Keep `IMPACT_BASIC_AUTH_PASSWORD` enabled. This is an internal tool, not the public ninety two marketing site.
 
-> **Do not start Epic 3 (Signal Engine / NIN-6) until v0.2 is live and verified.** We need a working baseline first.
+> **Do not start Epic 3 until v0.2 is verified on phone + desktop.** Epic 2.5 (Knowledge Engine) comes before Signal Engine.
 
 ---
 
@@ -22,7 +23,8 @@ Mobile-accessible internal MVP for ninety two.
 |----------|---------------|------|
 | `NEXT_PUBLIC_SUPABASE_URL` | Client + server | Safe to expose |
 | `NEXT_PUBLIC_SUPABASE_ANON_KEY` | Client + server | Safe to expose (RLS applies when enabled) |
-| `SUPABASE_SERVICE_ROLE_KEY` | **Server only** | Never prefix with `NEXT_PUBLIC_`. Never import in client components. Used only in server actions via `@impact/db` → `createServerClient()` |
+| `SUPABASE_SERVICE_ROLE_KEY` | **Server only** | Legacy **service_role** JWT (`eyJ...`) or Secret key (`sb_secret_...`). Never prefix with `NEXT_PUBLIC_`. Server actions only via `@impact/db` → `createServerClient()` |
+| `SUPABASE_URL` | **Server only** | Optional runtime override for Supabase Project URL (`https://xxx.supabase.co`). Prefer this over relying on build-time `NEXT_PUBLIC_*` inlining |
 | `IMPACT_BASIC_AUTH_PASSWORD` | Server (middleware) | Use a **strong, unique password** (20+ chars). Not shared in chat or committed to git |
 
 **Verified in codebase:** `SUPABASE_SERVICE_ROLE_KEY` is read only in `packages/db/src/client.ts` (`createServerClient`) and consumed by `supabase-store.ts`. All writes go through `"use server"` actions in `apps/agency/lib/opportunities/actions.ts`.
@@ -94,9 +96,10 @@ Replace `YOUR_ORG` with your GitHub username or org (e.g. `getforge`).
 [Vercel → impact → Settings → Environment Variables](https://vercel.com/getforge/impact/settings/environment-variables)
 
 ```
+SUPABASE_URL=                    # optional; server-only Project URL
 NEXT_PUBLIC_SUPABASE_URL=
 NEXT_PUBLIC_SUPABASE_ANON_KEY=
-SUPABASE_SERVICE_ROLE_KEY=
+SUPABASE_SERVICE_ROLE_KEY=       # legacy service_role JWT (eyJ...) recommended
 IMPACT_BASIC_AUTH_PASSWORD=   # strong password — 20+ chars, unique
 ```
 
@@ -138,7 +141,46 @@ npx vercel deploy --prod --yes
 - [ ] Basic auth prompt appears before dashboard loads
 - [ ] Works on mobile viewport (hamburger menu)
 
-Only after all checks pass → v0.2 is live. Then start **NIN-6 Signal Engine**.
+Only after all checks pass → v0.2 is live.
+
+---
+
+## Step 6 — Custom domain (recommended)
+
+Use a **subdomain**, not a path on the main ninety two site.
+
+| Use | Don't use |
+|-----|-----------|
+| `https://impact.weareninetytwo.xyz` | `https://weareninetytwo.xyz/impact` |
+
+**Why subdomain, not path:**
+
+- Cleaner internal tool URL
+- Easier Vercel setup (no reverse-proxy rewrites on the marketing site)
+- SaaS-ready architecture — later move to `app.useimpact.com` without rebuilding
+- Avoids conflicts with the main ninety two website
+- Keeps Impact clearly separate while password-protected
+
+**Do not** put Impact on the root domain (`weareninetytwo.xyz`) yet. Keep it internal with basic auth.
+
+### Add domain in Vercel
+
+1. [Vercel → impact → Settings → Domains](https://vercel.com/getforge/impact/settings/domains)
+2. Add **`impact.weareninetytwo.xyz`**
+3. Vercel shows a **CNAME** target (e.g. `cname.vercel-dns.com`)
+4. In your DNS provider (where `weareninetytwo.xyz` is managed), add:
+
+   | Type | Name | Value |
+   |------|------|-------|
+   | CNAME | `impact` | *(value Vercel provides)* |
+
+5. Wait for DNS propagation (minutes to a few hours)
+6. Keep **`IMPACT_BASIC_AUTH_PASSWORD`** enabled in Production env vars
+7. Verify **mobile and desktop** after the domain shows **Valid** in Vercel
+
+### Future product domain
+
+When ready for external/SaaS use, point a dedicated domain (e.g. `app.useimpact.com`) the same way — swap DNS, no app rebuild required.
 
 ---
 
@@ -170,10 +212,32 @@ npm run dev --workspace=@impact/agency -- --hostname 0.0.0.0
 
 | Issue | Fix |
 |-------|-----|
-| Empty opportunities after deploy | Check `SUPABASE_SERVICE_ROLE_KEY` is set on Vercel |
+| Empty opportunities after deploy | Check `SUPABASE_SERVICE_ROLE_KEY` is set on Vercel (use legacy `service_role` JWT if `sb_secret_` fails) |
+| Invalid API key / Supabase error | Re-copy full **service_role** JWT from Supabase → Legacy API Keys; redeploy |
+| Cannot reach Supabase | Set `SUPABASE_URL` to `https://xxx.supabase.co` (Project URL from Settings → API, not dashboard browser URL) |
 | 401 on every page | Enter basic auth credentials; check `IMPACT_BASIC_AUTH_PASSWORD` |
 | Build fails on Vercel | Deploy from monorepo root; `vercel.json` at repo root builds `@impact/agency` |
 | SQL error on deploy script | Run `deploy-v0.2.sql` only (not partial migrations) |
+
+### Desktop not loading (mobile works)
+
+If the phone loads but desktop does not, it's usually cache or basic auth — not the app itself.
+
+**Fast checks (in order):**
+
+1. **Incognito / private window** on desktop
+2. **Another browser** (Chrome vs Safari vs Firefox)
+3. **Hard refresh:** `Cmd + Shift + R` (Mac) or `Ctrl + Shift + R` (Windows)
+4. **Clear site data** for `impact-rosy.vercel.app` (or your custom domain) — cookies + cached auth
+5. **Same exact URL** as phone (including `https://`)
+6. If login prompts repeat: browser cached a bad basic-auth response — incognito or clear site data fixes it
+7. Check for **ad blocker / privacy extensions** blocking auth headers
+8. [Vercel → Deployments → Logs](https://vercel.com/getforge/impact) — look for 500/404 on desktop requests
+9. Confirm all env vars exist for **Production** (not Preview only)
+
+**Basic auth tip:** Username can be anything; only the password must match `IMPACT_BASIC_AUTH_PASSWORD`.
+
+Diagnostic (after login): `https://impact-rosy.vercel.app/api/health` — should show `"supabase":"ok"`.
 
 ---
 
@@ -190,7 +254,8 @@ npm run dev --workspace=@impact/agency -- --hostname 0.0.0.0
 
 - Supabase Auth login UI
 - Multi-user / multi-tenant switching
+- Knowledge Engine (Epic 2.5)
 - Signal importers (Epic 3 — **NIN-6**)
 - AI agents
 
-**Next epic after go-live:** Signal Engine (NIN-6) — RFP links, source docs, and opportunity watch results flow into Impact.
+**Next epic:** Knowledge Engine (Epic 2.5) — then Signal Importer + source documents (NIN-6).

@@ -17,6 +17,11 @@ export const MODULE_NAV: NavItem[] = [
     description: "Pipeline — signal to closed deal",
   },
   {
+    label: "Knowledge",
+    href: "/knowledge",
+    description: "Proposals, SOPs, rates — grounded business context",
+  },
+  {
     label: "Signals",
     href: "/signals",
     description: "Buying signals ingestion and matching",

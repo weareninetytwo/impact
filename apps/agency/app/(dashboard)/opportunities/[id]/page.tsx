@@ -3,6 +3,7 @@ import { notFound } from "next/navigation";
 import { fetchOpportunity } from "@/lib/opportunities/actions";
 import { GradeBadge } from "@/components/opportunities/grade-badge";
 import { StageSelect } from "@/components/opportunities/stage-select";
+import { OpportunityKnowledgeSection } from "@/components/knowledge/opportunity-knowledge-section";
 import styles from "./page.module.css";
 
 function formatCurrency(value: number | null): string {
@@ -131,6 +132,8 @@ export default async function OpportunityDetailPage({
             <p className={styles.text}>{opp.notes}</p>
           </section>
         )}
+
+        <OpportunityKnowledgeSection opportunityId={opp.id} />
       </div>
     </div>
   );

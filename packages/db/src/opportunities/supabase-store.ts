@@ -101,15 +101,33 @@ function getClient() {
   return client;
 }
 
-export async function supabaseListOpportunities(): Promise<Opportunity[]> {
-  const { data, error } = await getClient()
-    .from("opportunity_records")
-    .select("*")
-    .eq("tenant_id", DEFAULT_TENANT_ID)
-    .order("total_score", { ascending: false });
+function supabaseErrorMessage(err: unknown): string {
+  const msg = err instanceof Error ? err.message : String(err);
+  if (msg.includes("Invalid API key") || msg.includes("invalid api key")) {
+    return "Invalid Supabase API key. In Vercel, set SUPABASE_SERVICE_ROLE_KEY to the full Secret key (sb_secret_...) from Supabase Settings → API → Secret keys → default → reveal. Do not use the Publishable key.";
+  }
+  if (msg.includes("fetch failed") || msg.includes("ENOTFOUND")) {
+    return "Cannot reach Supabase. Check SUPABASE_URL / NEXT_PUBLIC_SUPABASE_URL in Vercel (must be https://xxx.supabase.co from Settings → API).";
+  }
+  if (msg.includes("opportunity_records") && msg.includes("does not exist")) {
+    return "Database tables missing. Run packages/db/supabase/deploy-v0.2.sql in Supabase SQL Editor.";
+  }
+  return msg;
+}
 
-  if (error) throw new Error(error.message);
-  return (data as DbRow[]).map(rowToOpportunity);
+export async function supabaseListOpportunities(): Promise<Opportunity[]> {
+  try {
+    const { data, error } = await getClient()
+      .from("opportunity_records")
+      .select("*")
+      .eq("tenant_id", DEFAULT_TENANT_ID)
+      .order("total_score", { ascending: false });
+
+    if (error) throw new Error(error.message);
+    return (data as DbRow[]).map(rowToOpportunity);
+  } catch (err) {
+    throw new Error(supabaseErrorMessage(err));
+  }
 }
 
 export async function supabaseGetOpportunity(

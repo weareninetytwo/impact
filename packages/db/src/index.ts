@@ -21,3 +21,17 @@ export {
 } from "./opportunities/import";
 export { CSV_TEMPLATE } from "@impact/shared";
 export { getDataFilePath } from "./opportunities/store";
+export {
+  listKnowledgeItems,
+  getKnowledgeItem,
+  getKnowledgeChunks,
+  createKnowledgeItem,
+  askKnowledge,
+  linkKnowledgeToOpportunity,
+  unlinkKnowledgeFromOpportunity,
+  getLinkedKnowledgeForOpportunity,
+  getOpportunityKnowledgeLinks,
+  getKnowledgeItemLinks,
+  formatKnowledgeType,
+  getKnowledgeDataFilePath,
+} from "./knowledge/repository";

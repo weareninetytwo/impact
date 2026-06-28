@@ -1,0 +1,114 @@
+.page {
+  max-width: 960px;
+}
+
+.back {
+  display: inline-block;
+  font-size: 0.8125rem;
+  color: #64748b;
+  margin-bottom: 1rem;
+  text-decoration: none;
+}
+
+.header {
+  margin-bottom: 1.5rem;
+}
+
+.typeBadge {
+  display: inline-block;
+  font-size: 0.6875rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  color: #475569;
+  background: #f1f5f9;
+  padding: 0.125rem 0.5rem;
+  border-radius: 4px;
+  margin-bottom: 0.5rem;
+}
+
+.title {
+  font-size: 1.375rem;
+  font-weight: 700;
+  margin: 0 0 0.5rem;
+}
+
+.summary {
+  color: #475569;
+  margin: 0 0 0.5rem;
+}
+
+.meta {
+  font-size: 0.8125rem;
+  color: #94a3b8;
+  margin: 0.25rem 0 0;
+}
+
+.grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1rem;
+}
+
+.full {
+  grid-column: 1 / -1;
+}
+
+.panel {
+  background: #fff;
+  border: 1px solid #e2e8f0;
+  border-radius: 8px;
+  padding: 1rem 1.25rem;
+}
+
+.panelTitle {
+  font-size: 0.8125rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  color: #64748b;
+  margin: 0 0 0.75rem;
+}
+
+.content {
+  white-space: pre-wrap;
+  font-size: 0.8125rem;
+  line-height: 1.5;
+  color: #334155;
+  margin: 0;
+  font-family: inherit;
+  max-height: 320px;
+  overflow: auto;
+}
+
+.hint {
+  font-size: 0.75rem;
+  color: #94a3b8;
+  margin: 0 0 0.75rem;
+}
+
+.chunkList {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.chunk {
+  font-size: 0.8125rem;
+  color: #475569;
+  padding: 0.5rem 0;
+  border-bottom: 1px solid #f1f5f9;
+  line-height: 1.4;
+}
+
+.chunkIndex {
+  font-weight: 700;
+  color: #94a3b8;
+  margin-right: 0.375rem;
+}
+
+@media (max-width: 768px) {
+  .grid {
+    grid-template-columns: 1fr;
+  }
+}
