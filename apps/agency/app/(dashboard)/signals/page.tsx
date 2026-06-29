@@ -21,6 +21,14 @@ export default function SignalsPage() {
           </p>
         </Link>
 
+        <Link href="/signals/scout" className={styles.card}>
+          <h2 className={styles.cardTitle}>Scheduled Scout</h2>
+          <p className={styles.cardBody}>
+            Configure RSS and search sources, run Scout manually, and queue
+            discovered signals for review.
+          </p>
+        </Link>
+
         <Link href="/signals/import-test" className={styles.card}>
           <h2 className={styles.cardTitle}>Import test</h2>
           <p className={styles.cardBody}>

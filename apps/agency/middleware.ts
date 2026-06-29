@@ -14,6 +14,11 @@ export function middleware(request: NextRequest) {
     return NextResponse.next();
   }
 
+  // Scheduled scout cron uses Bearer IMPACT_SCOUT_SECRET
+  if (path === "/api/scout/run") {
+    return NextResponse.next();
+  }
+
   const password = process.env.IMPACT_BASIC_AUTH_PASSWORD?.trim().replace(/[^\x00-\xFF]/g, "");
   if (!password) {
     return NextResponse.next();

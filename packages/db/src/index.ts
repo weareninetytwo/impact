@@ -48,3 +48,13 @@ export {
   mergeSignalImport,
   skipSignalImport,
 } from "./signals/import-repository";
+export {
+  listScoutSources,
+  getScoutSource,
+  createScoutSource,
+  updateScoutSource,
+  listScoutRuns,
+  addScoutPresets,
+  SCOUT_SOURCE_PRESETS,
+} from "./scout/repository";
+export { runScout, runScoutSource, runAllEnabledScoutSources } from "./scout/runner";
