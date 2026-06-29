@@ -4,6 +4,9 @@ import { isSupabaseAuthEnabled } from "@/lib/supabase/env";
 import {
   getAppUser,
   getTenantById,
+  resolveDefaultTenantId,
+  upsertAppUser,
+  type AppUserRecord,
 } from "@impact/db";
 
 export interface AuthSession {
@@ -33,9 +36,26 @@ export async function getAuthSession(): Promise<AuthSession | null> {
     (user.user_metadata?.tenant_id as string | undefined);
 
   const appUser = await getAppUser(user.id).catch(() => null);
-  const resolvedTenantId = appUser?.tenant_id ?? tenantId;
+  let resolvedTenantId = appUser?.tenant_id ?? tenantId;
+
+  if (!resolvedTenantId) {
+    resolvedTenantId = await resolveDefaultTenantId().catch(() => undefined);
+  }
 
   if (!resolvedTenantId) return null;
+
+  if (!appUser && resolvedTenantId) {
+    await upsertAppUser({
+      id: user.id,
+      tenant_id: resolvedTenantId,
+      email: user.email ?? "",
+      full_name:
+        (user.user_metadata?.full_name as string | undefined) ||
+        user.email?.split("@")[0] ||
+        "User",
+      role: (user.app_metadata?.role as AppUserRecord["role"]) ?? "bd_rep",
+    }).catch(() => undefined);
+  }
 
   const tenant = await getTenantById(resolvedTenantId).catch(() => null);
 

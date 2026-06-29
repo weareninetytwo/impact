@@ -57,7 +57,10 @@ export async function middleware(request: NextRequest) {
 
   if (isPublicPath(path)) {
     if (isSupabaseAuthEnabled() && PUBLIC_PATHS.some((p) => path.startsWith(p))) {
-      const { response } = await refreshSupabaseSession(request);
+      const { response, user } = await refreshSupabaseSession(request);
+      if (user && (path === "/login" || path === "/signup")) {
+        return NextResponse.redirect(new URL("/dashboard", request.url));
+      }
       return response;
     }
     return NextResponse.next();

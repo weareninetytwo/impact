@@ -1,7 +1,13 @@
 import { signUpAction } from "@/lib/auth/actions";
+import { AuthAlert } from "../login/auth-alert";
 import styles from "../login/auth.module.css";
 
-export default function SignUpPage() {
+export default async function SignUpPage({
+  searchParams,
+}: {
+  searchParams: Promise<{ error?: string; message?: string }>;
+}) {
+  const params = await searchParams;
   const defaultSlug =
     process.env.IMPACT_DEFAULT_TENANT_SLUG?.trim() || "ninety-two";
 
@@ -13,16 +19,9 @@ export default function SignUpPage() {
           Join your organization or register a new enterprise workspace.
         </p>
 
-        <form
-          className={styles.form}
-          action={async (formData) => {
-            "use server";
-            const result = await signUpAction(formData);
-            if (result && "error" in result) {
-              return;
-            }
-          }}
-        >
+        <AuthAlert error={params.error} message={params.message} />
+
+        <form className={styles.form} action={signUpAction}>
           <label className={styles.field}>
             Full name
             <input name="full_name" required autoComplete="name" />
