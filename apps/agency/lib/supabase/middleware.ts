@@ -28,9 +28,12 @@ export async function refreshSupabaseSession(request: NextRequest) {
     },
   });
 
-  const {
-    data: { user },
-  } = await supabase.auth.getUser();
-
-  return { response: supabaseResponse, user };
+  try {
+    const {
+      data: { user },
+    } = await supabase.auth.getUser();
+    return { response: supabaseResponse, user };
+  } catch {
+    return { response: supabaseResponse, user: null };
+  }
 }

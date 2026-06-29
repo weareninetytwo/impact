@@ -1,6 +1,8 @@
 import { AuthAlert } from "./auth-alert";
 import styles from "./auth.module.css";
 
+export const dynamic = "force-dynamic";
+
 export default async function LoginPage({
   searchParams,
 }: {
@@ -44,6 +46,10 @@ export default async function LoginPage({
           New to Impact?{" "}
           <a href="/signup" className={styles.link}>
             Create account
+          </a>
+          {" · "}
+          <a href="/api/auth/logout" className={styles.link}>
+            Clear session
           </a>
         </p>
       </div>

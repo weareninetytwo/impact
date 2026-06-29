@@ -16,6 +16,7 @@ const API_PUBLIC_PATHS = [
   "/api/opportunity-watch/run",
   "/api/health",
   "/api/auth/login",
+  "/api/auth/logout",
 ];
 
 function isPublicPath(path: string): boolean {
@@ -57,13 +58,6 @@ export async function middleware(request: NextRequest) {
   const path = request.nextUrl.pathname;
 
   if (isPublicPath(path)) {
-    if (isSupabaseAuthEnabled() && PUBLIC_PATHS.some((p) => path.startsWith(p))) {
-      const { response, user } = await refreshSupabaseSession(request);
-      if (user && (path === "/login" || path === "/signup")) {
-        return NextResponse.redirect(new URL("/dashboard", request.url));
-      }
-      return response;
-    }
     return NextResponse.next();
   }
 
