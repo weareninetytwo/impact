@@ -51,10 +51,12 @@ export default async function DashboardPage() {
           <span className={styles.statValue}>{stats.a_grade}</span>
           <span className={styles.statLabel}>A-grade opportunities</span>
         </div>
-        <div className={styles.stat}>
-          <span className={styles.statValue}>{stats.ready_for_outreach}</span>
-          <span className={styles.statLabel}>Ready for outreach</span>
-        </div>
+        <Link href="/outreach" className={styles.statLink}>
+          <div className={styles.stat}>
+            <span className={styles.statValue}>{stats.ready_for_outreach}</span>
+            <span className={styles.statLabel}>Ready for outreach</span>
+          </div>
+        </Link>
         <div className={styles.stat}>
           <span className={styles.statValue}>{stats.needs_contact}</span>
           <span className={styles.statLabel}>Needs contact</span>
@@ -89,7 +91,10 @@ export default async function DashboardPage() {
       </div>
 
       <div className={styles.quick}>
-        <Link href="/opportunities/new" className={styles.quickBtn}>
+        <Link href="/outreach" className={styles.quickBtn}>
+          Prep outreach drafts
+        </Link>
+        <Link href="/opportunities/new" className={styles.quickBtnSecondary}>
           + New opportunity
         </Link>
         <Link href="/opportunities/import" className={styles.quickBtnSecondary}>

@@ -3,12 +3,12 @@ import type { ScoutPreset } from "@impact/shared";
 export const SCOUT_SOURCE_PRESETS: ScoutPreset[] = [
   {
     preset_key: "nyscr",
-    name: "NYSCR — NY public RFP search",
+    name: "Google News — NY design/RFP keywords",
     source_type: "manual_query",
     url: "https://nyscr.ny.gov/",
-    query: "website OR design OR branding OR RFP",
+    query: '("New York" OR NY) (website OR design OR branding OR "request for proposal")',
     description:
-      "Manual NY State Contract Reporter search stub. Set query terms; Scout uses Google News RSS as a proxy until NYSCR API/scrape is wired.",
+      "Google News RSS search for NY-related design/branding/RFP keywords. Proxy only — not a direct NYSCR feed until Epic 4.",
   },
   {
     preset_key: "sam_gov",

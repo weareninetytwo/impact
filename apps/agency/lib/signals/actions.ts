@@ -8,6 +8,7 @@ import {
   approveSignalImport,
   mergeSignalImport,
   skipSignalImport,
+  skipAllPendingSignalImports,
 } from "@impact/db";
 import type { SignalIngestPayload, SignalIngestResult } from "@impact/shared";
 import { revalidatePath } from "next/cache";
@@ -18,6 +19,7 @@ function revalidateSignalPaths() {
   revalidatePath("/signals/review");
   revalidatePath("/knowledge");
   revalidatePath("/dashboard");
+  revalidatePath("/outreach");
 }
 
 export async function fetchPendingSignalImports() {
@@ -95,6 +97,20 @@ export async function skipSignalImportAction(
   } catch (err) {
     return {
       error: err instanceof Error ? err.message : "Skip failed",
+    };
+  }
+}
+
+export async function skipAllPendingSignalImportsAction(): Promise<
+  { ok: true; count: number } | { error: string }
+> {
+  try {
+    const count = await skipAllPendingSignalImports();
+    revalidateSignalPaths();
+    return { ok: true, count };
+  } catch (err) {
+    return {
+      error: err instanceof Error ? err.message : "Bulk skip failed",
     };
   }
 }

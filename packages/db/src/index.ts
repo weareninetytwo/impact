@@ -14,6 +14,7 @@ export {
   updateOpportunityStage,
   updateOpportunityNotes,
 } from "./opportunities/repository";
+export { listOutreachQueue } from "./opportunities/outreach-queue";
 export type { CreateResult, ImportResult } from "./opportunities/repository";
 export {
   parseCsvOpportunities,
@@ -48,6 +49,7 @@ export {
   approveSignalImport,
   mergeSignalImport,
   skipSignalImport,
+  skipAllPendingSignalImports,
 } from "./signals/import-repository";
 export {
   listScoutSources,

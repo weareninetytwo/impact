@@ -1,19 +1,10 @@
+import { decodeXmlEntities } from "@impact/shared";
+
 export interface RawScoutItem {
   title: string;
   link: string;
   description?: string;
   pubDate?: string;
-}
-
-function decodeXmlEntities(text: string): string {
-  return text
-    .replace(/&amp;/g, "&")
-    .replace(/&lt;/g, "<")
-    .replace(/&gt;/g, ">")
-    .replace(/&quot;/g, '"')
-    .replace(/&#39;/g, "'")
-    .replace(/<!\[CDATA\[([\s\S]*?)\]\]>/g, "$1")
-    .trim();
 }
 
 function extractTag(block: string, tag: string): string | undefined {

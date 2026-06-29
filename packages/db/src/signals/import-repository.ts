@@ -15,6 +15,7 @@ import {
   supabaseGetSignalImport,
   supabaseInsertSignalImport,
   supabaseListSignalImports,
+  supabaseSkipAllPendingSignalImports,
   supabaseUpdateSignalImport,
 } from "./import-supabase";
 import {
@@ -162,4 +163,23 @@ export async function skipSignalImport(id: string): Promise<void> {
     status: "skipped",
     reviewed_at: new Date().toISOString(),
   });
+}
+
+export async function skipAllPendingSignalImports(): Promise<number> {
+  const reviewedAt = new Date().toISOString();
+
+  if (isSupabasePersistenceEnabled()) {
+    return supabaseSkipAllPendingSignalImports(reviewedAt);
+  }
+
+  const records = await readSignalImports();
+  let count = 0;
+  for (const record of records) {
+    if (record.status !== "pending") continue;
+    record.status = "skipped";
+    record.reviewed_at = reviewedAt;
+    count++;
+  }
+  if (count > 0) await writeSignalImports(records);
+  return count;
 }

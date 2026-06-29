@@ -2,6 +2,7 @@ import Link from "next/link";
 import { fetchPendingSignalImports } from "@/lib/signals/actions";
 import { fetchOpportunities } from "@/lib/opportunities/actions";
 import { SignalReviewCard } from "@/components/signals/signal-review-card";
+import { BulkSkipBar } from "@/components/signals/bulk-skip-bar";
 import styles from "./page.module.css";
 
 export default async function SignalReviewPage() {
@@ -35,15 +36,18 @@ export default async function SignalReviewPage() {
           </p>
         </div>
       ) : (
-        <div className={styles.list}>
-          {pending.map((record) => (
-            <SignalReviewCard
-              key={record.id}
-              record={record}
-              opportunities={opportunities}
-            />
-          ))}
-        </div>
+        <>
+          <BulkSkipBar pendingCount={pending.length} />
+          <div className={styles.list}>
+            {pending.map((record) => (
+              <SignalReviewCard
+                key={record.id}
+                record={record}
+                opportunities={opportunities}
+              />
+            ))}
+          </div>
+        </>
       )}
     </div>
   );
