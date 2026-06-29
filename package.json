@@ -9,9 +9,14 @@
     "dev": "npm run dev --workspace=@impact/agency",
     "build": "npm run build --workspace=@impact/agency",
     "lint": "npm run lint --workspace=@impact/agency",
-    "typecheck": "npm run typecheck --workspaces --if-present"
+    "typecheck": "npm run typecheck --workspaces --if-present",
+    "deploy": "node scripts/deploy-production.mjs",
+    "deploy:env": "node scripts/sync-vercel-env.mjs"
   },
   "engines": {
     "node": ">=20"
+  },
+  "devDependencies": {
+    "vercel": "^54.18.2"
   }
 }
