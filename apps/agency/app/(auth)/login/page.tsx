@@ -1,4 +1,4 @@
-import { LoginForm } from "./login-form";
+import { AuthAlert } from "./auth-alert";
 import styles from "./auth.module.css";
 
 export default async function LoginPage({
@@ -18,11 +18,27 @@ export default async function LoginPage({
           knowledge in one place.
         </p>
 
-        <LoginForm
-          next={next}
-          initialError={params.error}
-          initialMessage={params.message}
-        />
+        <AuthAlert error={params.error} message={params.message} />
+
+        <form className={styles.form} action="/api/auth/login" method="POST">
+          <input type="hidden" name="next" value={next} />
+          <label className={styles.field}>
+            Email
+            <input name="email" type="email" required autoComplete="email" />
+          </label>
+          <label className={styles.field}>
+            Password
+            <input
+              name="password"
+              type="password"
+              required
+              autoComplete="current-password"
+            />
+          </label>
+          <button type="submit" className={styles.primaryBtn}>
+            Sign in
+          </button>
+        </form>
 
         <p className={styles.footer}>
           New to Impact?{" "}

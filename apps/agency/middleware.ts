@@ -15,6 +15,7 @@ const API_PUBLIC_PATHS = [
   "/api/opportunity-watch/import",
   "/api/opportunity-watch/run",
   "/api/health",
+  "/api/auth/login",
 ];
 
 function isPublicPath(path: string): boolean {
