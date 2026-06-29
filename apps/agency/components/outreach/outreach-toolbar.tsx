@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import { useRouter } from "next/navigation";
-import { prepareAllOutreachAction } from "@/lib/outreach/actions";
+import { prepareAllOutreachAction, refreshAllOutreachDraftsAction } from "@/lib/outreach/actions";
 import styles from "./outreach-toolbar.module.css";
 
 export function OutreachToolbar({ queueCount }: { queueCount: number }) {
@@ -27,6 +27,22 @@ export function OutreachToolbar({ queueCount }: { queueCount: number }) {
     setPending(false);
   }
 
+  async function handleRefreshDrafts() {
+    setPending(true);
+    setError(null);
+    setMessage(null);
+    const result = await refreshAllOutreachDraftsAction();
+    if ("error" in result) {
+      setError(result.error);
+    } else {
+      setMessage(
+        `Refreshed ${result.count} A/B draft${result.count === 1 ? "" : "s"} — review and save any edits.`,
+      );
+      router.refresh();
+    }
+    setPending(false);
+  }
+
   return (
     <div className={styles.toolbar}>
       <p className={styles.hint}>
@@ -41,6 +57,14 @@ export function OutreachToolbar({ queueCount }: { queueCount: number }) {
           onClick={handlePrepareAll}
         >
           {pending ? "Preparing…" : "Prepare all A/B drafts"}
+        </button>
+        <button
+          type="button"
+          className={styles.secondary}
+          disabled={pending || queueCount === 0}
+          onClick={handleRefreshDrafts}
+        >
+          {pending ? "Refreshing…" : "Refresh A/B drafts"}
         </button>
       </div>
       {message && <p className={styles.success}>{message}</p>}

@@ -165,3 +165,46 @@ export async function prepareAllOutreachAction(): Promise<
   revalidateOutreachPaths();
   return { ok: true, count };
 }
+
+export async function refreshAllOutreachDraftsAction(): Promise<
+  { ok: true; count: number } | { error: string }
+> {
+  try {
+    const opportunities = await listOutreachQueue();
+    const session = await getAuthSession();
+    const senderName =
+      session?.fullName?.split(/\s+/)[0] ?? "Gino";
+    let count = 0;
+
+    for (const opportunity of opportunities) {
+      if (opportunity.lead_grade !== "A" && opportunity.lead_grade !== "B") {
+        continue;
+      }
+
+      const linked = await getLinkedKnowledgeForOpportunity(opportunity.id);
+      const { userNotes } = parseOutreachFromNotes(opportunity.notes);
+      const generated = buildOutreachDraft({
+        opportunity,
+        knowledgeSnippets: linked.slice(0, 2).map((i) => i.summary ?? i.title),
+        senderName,
+      });
+
+      await updateOpportunityNotes(
+        opportunity.id,
+        mergeOutreachIntoNotes(userNotes, {
+          subject: generated.subject,
+          body: generated.body,
+          contactEmail: "",
+        }),
+      );
+      count++;
+    }
+
+    revalidateOutreachPaths();
+    return { ok: true, count };
+  } catch (err) {
+    return {
+      error: err instanceof Error ? err.message : "Failed to refresh drafts",
+    };
+  }
+}

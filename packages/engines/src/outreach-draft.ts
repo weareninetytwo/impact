@@ -50,10 +50,52 @@ function signalContext(summary: string | null, title: string): string {
   return `\n\nFor context: ${snippet}`;
 }
 
-function knowledgeBlock(snippets: string[] | undefined): string {
-  if (!snippets?.length) return "";
-  const line = snippets[0].length > 200 ? `${snippets[0].slice(0, 197)}…` : snippets[0];
-  return `\n\nWe recently helped a similar team with ${line}`;
+function normalizeForCompare(text: string): string {
+  return text.toLowerCase().replace(/\s+/g, " ").trim();
+}
+
+function isDuplicateOfSignal(
+  snippet: string,
+  summary: string | null,
+  title: string,
+): boolean {
+  const signal = normalizeForCompare(summary ?? title);
+  const line = normalizeForCompare(snippet);
+  if (!signal || !line) return false;
+  if (line === signal) return true;
+  if (line.length > 40 && signal.includes(line)) return true;
+  if (signal.length > 40 && line.includes(signal)) return true;
+  return false;
+}
+
+function distinctKnowledgeSnippets(
+  snippets: string[] | undefined,
+  summary: string | null,
+  title: string,
+): string[] {
+  if (!snippets?.length) return [];
+  const seen = new Set<string>();
+  return snippets.filter((snippet) => {
+    const trimmed = snippet.trim();
+    if (!trimmed) return false;
+    if (isDuplicateOfSignal(trimmed, summary, title)) return false;
+    const key = normalizeForCompare(trimmed);
+    if (seen.has(key)) return false;
+    seen.add(key);
+    return true;
+  });
+}
+
+function knowledgeBlock(
+  snippets: string[] | undefined,
+  summary: string | null,
+  title: string,
+): string {
+  const distinct = distinctKnowledgeSnippets(snippets, summary, title);
+  if (!distinct.length) return "";
+  const line =
+    distinct[0].length > 200 ? `${distinct[0].slice(0, 197)}…` : distinct[0];
+  return `\n\nHappy to share relevant work — for example, ${line}`;
 }
 
 export function buildOutreachDraft(input: OutreachDraftInput): OutreachDraft {
@@ -72,7 +114,7 @@ export function buildOutreachDraft(input: OutreachDraftInput): OutreachDraft {
 
   const body = `Hi ${firstNameFromCompany(company)} team,
 
-${hook}${signalContext(opportunity.signal_summary, opportunity.title)}${knowledgeBlock(knowledgeSnippets)}
+${hook}${signalContext(opportunity.signal_summary, opportunity.title)}${knowledgeBlock(knowledgeSnippets, opportunity.signal_summary, opportunity.title)}
 
 ninety two is a brand and digital studio — we partner with growth-stage teams on brand strategy, web, and campaign creative when speed and craft both matter.
 
