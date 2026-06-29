@@ -6,5 +6,6 @@ export * from "./types/scout";
 export * from "./types/opportunity-watch";
 export * from "./constants/navigation";
 export * from "./constants/csv-template";
+export * from "./types/pipeline";
 export * from "./text/strip-html";
 export * from "./text/outreach-draft-storage";

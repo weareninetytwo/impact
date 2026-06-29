@@ -2,6 +2,7 @@ import Link from "next/link";
 import { fetchDashboardStats, fetchOpportunities } from "@/lib/opportunities/actions";
 import { fetchPendingImportCount } from "@/lib/signals/actions";
 import { fetchLatestOpportunityWatchRun } from "@/lib/opportunity-watch/actions";
+import { fetchAutomationSummary } from "@/lib/pipeline/actions";
 import { GradeBadge } from "@/components/opportunities/grade-badge";
 import styles from "./page.module.css";
 
@@ -23,11 +24,13 @@ function formatCurrency(value: number): string {
 }
 
 export default async function DashboardPage() {
-  const [stats, opportunities, pendingImports, lastWatch] = await Promise.all([
+  const [stats, opportunities, pendingImports, lastWatch, automation] =
+    await Promise.all([
     fetchDashboardStats(),
     fetchOpportunities(),
     fetchPendingImportCount(),
     fetchLatestOpportunityWatchRun(),
+    fetchAutomationSummary(),
   ]);
 
   const aGrade = opportunities.filter((o) => o.lead_grade === "A");
@@ -91,16 +94,30 @@ export default async function DashboardPage() {
       </div>
 
       <div className={styles.quick}>
-        <Link href="/outreach" className={styles.quickBtn}>
+        <Link href="/automation" className={styles.quickBtn}>
+          Run automation
+        </Link>
+        <Link href="/outreach" className={styles.quickBtnSecondary}>
           Prep outreach drafts
         </Link>
-        <Link href="/opportunities/new" className={styles.quickBtnSecondary}>
-          + New opportunity
-        </Link>
-        <Link href="/opportunities/import" className={styles.quickBtnSecondary}>
-          Import CSV / paste
+        <Link href="/proposals" className={styles.quickBtnSecondary}>
+          View proposals
         </Link>
       </div>
+
+      {automation && (
+        <section className={styles.section}>
+          <h2 className={styles.sectionTitle}>Executive briefing</h2>
+          <div className={styles.briefing}>
+            {automation.briefing.split("\n").map((line) => (
+              <p key={line.slice(0, 40)}>{line.replace(/\*\*/g, "")}</p>
+            ))}
+          </div>
+          <Link href="/automation" className={styles.briefingLink}>
+            View automation details →
+          </Link>
+        </section>
+      )}
 
       <section className={styles.section}>
         <h2 className={styles.sectionTitle}>A-grade — book qualified calls</h2>

@@ -15,6 +15,22 @@ export {
   updateOpportunityNotes,
 } from "./opportunities/repository";
 export { listOutreachQueue } from "./opportunities/outreach-queue";
+export {
+  listPipelineArtifacts,
+  getLatestArtifactForOpportunity,
+  upsertOpportunityArtifact,
+  saveAutomationRun,
+  getLatestAutomationRun,
+  listCompaniesFromArtifacts,
+  listOpenTasks,
+  listActiveNurture,
+  listProposals,
+  markTaskDone,
+  updateProposalStatus,
+  createPipelineArtifact,
+} from "./pipeline/repository";
+export { runFullPipeline } from "./pipeline/run-full-pipeline";
+export type { RunFullPipelineOptions } from "./pipeline/run-full-pipeline";
 export type { CreateResult, ImportResult } from "./opportunities/repository";
 export {
   parseCsvOpportunities,

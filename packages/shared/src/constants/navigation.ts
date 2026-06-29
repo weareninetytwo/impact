@@ -67,6 +67,11 @@ export const MODULE_NAV: NavItem[] = [
     description: "Funnel metrics and grade distribution",
   },
   {
+    label: "Automation",
+    href: "/automation",
+    description: "Full agent chain — Scout through briefing",
+  },
+  {
     label: "Settings",
     href: "/settings",
     description: "ICP, scoring, offers, and preferences",
