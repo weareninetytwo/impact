@@ -2,13 +2,17 @@
   "openapi": "3.1.0",
   "info": {
     "title": "Impact Signal Ingest API",
-    "version": "3A.0",
-    "description": "Import opportunity-watch results from ChatGPT Custom GPT Actions or automation tools into Impact."
+    "version": "3B.0",
+    "description": "Import opportunity-watch results from ChatGPT Custom GPT Actions or automation tools into Impact. Default mode queues imports for review at /signals/review."
   },
   "servers": [
     {
+      "url": "https://impact.weareninetytwo.xyz",
+      "description": "Production (custom domain)"
+    },
+    {
       "url": "https://impact-rosy.vercel.app",
-      "description": "Production"
+      "description": "Production (Vercel alias)"
     },
     {
       "url": "http://localhost:3000",
@@ -20,7 +24,7 @@
       "post": {
         "operationId": "importSignals",
         "summary": "Import signal items as scored opportunities",
-        "description": "Validates JSON, dedupes by company+source_url or company+title, scores, creates source knowledge docs, and links them to opportunities.",
+        "description": "Validates JSON and imports signal items. Default mode=review queues rows for /signals/review. mode=direct creates/updates opportunities immediately (admin/testing).",
         "security": [{ "bearerAuth": [] }],
         "requestBody": {
           "required": true,
@@ -30,6 +34,8 @@
                 "$ref": "#/components/schemas/SignalIngestPayload"
               },
               "example": {
+                "mode": "review",
+                "import_source": "gpt",
                 "items": [
                   {
                     "company_name": "Northline Health",
@@ -85,6 +91,17 @@
             "minItems": 1,
             "maxItems": 100,
             "items": { "$ref": "#/components/schemas/SignalIngestItem" }
+          },
+          "mode": {
+            "type": "string",
+            "enum": ["review", "direct"],
+            "default": "review",
+            "description": "review queues for /signals/review; direct promotes to opportunities immediately"
+          },
+          "import_source": {
+            "type": "string",
+            "enum": ["gpt", "api", "manual", "scraper"],
+            "default": "api"
           }
         }
       },
@@ -113,9 +130,11 @@
           "created": { "type": "integer" },
           "updated": { "type": "integer" },
           "skipped": { "type": "integer" },
+          "queued": { "type": "integer" },
           "errors": { "type": "array", "items": { "type": "string" } },
           "opportunity_ids": { "type": "array", "items": { "type": "string", "format": "uuid" } },
-          "knowledge_ids": { "type": "array", "items": { "type": "string", "format": "uuid" } }
+          "knowledge_ids": { "type": "array", "items": { "type": "string", "format": "uuid" } },
+          "signal_import_ids": { "type": "array", "items": { "type": "string", "format": "uuid" } }
         }
       }
     }

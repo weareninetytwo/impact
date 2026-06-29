@@ -14,17 +14,24 @@ export interface SignalIngestItem {
   raw_text?: string;
 }
 
+import type { SignalImportSource, SignalIngestMode } from "./signal-import";
+
 export interface SignalIngestPayload {
   items: SignalIngestItem[];
+  /** Default: review — queues for /signals/review. Use direct for immediate pipeline. */
+  mode?: SignalIngestMode;
+  import_source?: SignalImportSource;
 }
 
 export interface SignalIngestResult {
   created: number;
   updated: number;
   skipped: number;
+  queued: number;
   errors: string[];
   opportunity_ids: string[];
   knowledge_ids: string[];
+  signal_import_ids: string[];
 }
 
 export const SIGNAL_INGEST_SAMPLE: SignalIngestPayload = {

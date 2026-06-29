@@ -13,6 +13,14 @@ export default function SignalsPage() {
       </header>
 
       <div className={styles.cards}>
+        <Link href="/signals/review" className={styles.card}>
+          <h2 className={styles.cardTitle}>Review queue</h2>
+          <p className={styles.cardBody}>
+            Approve, merge, or skip GPT and API imports before they enter the
+            live opportunity pipeline.
+          </p>
+        </Link>
+
         <Link href="/signals/import-test" className={styles.card}>
           <h2 className={styles.cardTitle}>Import test</h2>
           <p className={styles.cardBody}>

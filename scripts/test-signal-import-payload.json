@@ -1,0 +1,42 @@
+{
+  "items": [
+    {
+      "company_name": "Capital Region Medical Center",
+      "opportunity_title": "Hospital website redesign and patient portal UX",
+      "signal_type": "rfp",
+      "signal_summary": "Regional health system RFP for website rebuild, CMS migration, and WCAG compliance.",
+      "source_name": "NYSCR",
+      "source_url": "https://example.com/rfp/capital-region-medical-2026",
+      "deadline": "2026-08-22",
+      "estimated_value": "185000",
+      "location": "Albany, NY",
+      "fit_notes": "Healthcare + website — strong ninety two fit",
+      "raw_text": "Capital Region Medical Center seeks a qualified vendor for a full website redesign including discovery, UX, design system, CMS implementation, accessibility audit, and 90-day post-launch support."
+    },
+    {
+      "company_name": "Greenfield Logistics",
+      "opportunity_title": "Fleet rebrand and facility signage program",
+      "signal_type": "signage",
+      "signal_summary": "National logistics company rolling out rebrand across 40+ terminals.",
+      "source_name": "ChatGPT watch",
+      "source_url": "https://example.com/news/greenfield-logistics-rebrand",
+      "deadline": "2026-09-30",
+      "estimated_value": "95000",
+      "location": "Syracuse, NY",
+      "fit_score": 88,
+      "raw_text": "Greenfield Logistics announced a corporate rebrand requiring updated fleet graphics, terminal signage, wayfinding, and brand standards documentation across Northeast facilities."
+    },
+    {
+      "company_name": "Summit Credit Union",
+      "opportunity_title": "Brand refresh and branch marketing toolkit",
+      "signal_type": "expansion",
+      "signal_summary": "Credit union opening 6 new branches — needs brand refresh and launch campaign assets.",
+      "source_name": "Manual research",
+      "source_url": "https://example.com/press/summit-credit-expansion",
+      "estimated_value": "65000",
+      "location": "Rochester, NY",
+      "recommended_action": "Confirm decision maker and branch rollout timeline before outreach",
+      "raw_text": "Summit Credit Union plans six branch openings over 18 months and is evaluating agency partners for brand refresh, campaign templates, and in-branch marketing systems."
+    }
+  ]
+}

@@ -21,7 +21,7 @@ export function SignalImportTestPanel() {
     setError(null);
     setResult(null);
 
-    const response = await importSignalsAction(json);
+    const response = await importSignalsAction(json, "direct");
     if ("error" in response) {
       setError(response.error);
       setPending(false);
@@ -29,9 +29,12 @@ export function SignalImportTestPanel() {
     }
 
     setResult(
-      `${response.created} created, ${response.updated} updated, ${response.skipped} skipped` +
+      `${response.created} created, ${response.updated} updated, ${response.queued} queued, ${response.skipped} skipped` +
         (response.knowledge_ids.length
           ? ` · ${response.knowledge_ids.length} source doc(s)`
+          : "") +
+        (response.signal_import_ids.length
+          ? ` · ${response.signal_import_ids.length} in review queue`
           : ""),
     );
     if (response.errors.length) {
@@ -44,8 +47,10 @@ export function SignalImportTestPanel() {
   return (
     <form className={styles.panel} onSubmit={handleSubmit}>
       <p className={styles.hint}>
-        Paste JSON from ChatGPT or a Custom GPT Action. Same shape as{" "}
-        <code>POST /api/signals/import</code>.
+        Paste JSON from ChatGPT or a Custom GPT Action. Uses{" "}
+        <code>mode: &quot;direct&quot;</code> here so opportunities land
+        immediately. The API defaults to review queue — see{" "}
+        <code>/signals/review</code>.
       </p>
       <textarea
         className={styles.textarea}

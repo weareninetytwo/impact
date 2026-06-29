@@ -1,0 +1,34 @@
+{
+  "items": [
+    {
+      "company_name": "SUNY Morrisville",
+      "opportunity_title": "Marketing Services 2026",
+      "signal_type": "rfp",
+      "signal_summary": "RFP for digital marketing firms to support undergraduate enrollment campaign objectives.",
+      "source_name": "ChatGPT Opportunity Watch",
+      "source_url": "https://www.nyscr.ny.gov/",
+      "deadline": "2026-07-07",
+      "estimated_value": "75000",
+      "location": "Morrisville, NY",
+      "fit_score": 86,
+      "fit_notes": "Higher-ed marketing, campaign strategy, creative, content, digital ads, and student recruitment align with ninety two.",
+      "recommended_action": "Pull full RFP immediately and pursue directly unless media-buying requirements are heavy.",
+      "raw_text": "SUNY Morrisville Marketing Services 2026 opportunity. Digital marketing support for undergraduate enrollment. Deadline July 7, 2026. Contact listed in source summary: John Gunerman."
+    },
+    {
+      "company_name": "Village of Medina",
+      "opportunity_title": "Canal Basin Park / Waterfront Gateway Creative Support",
+      "signal_type": "partner_opportunity",
+      "signal_summary": "NY Forward-funded public realm design opportunity with potential for environmental graphics, signage, stakeholder visuals, and placemaking support.",
+      "source_name": "ChatGPT Opportunity Watch",
+      "source_url": "https://www.villagemedina.org/",
+      "deadline": "2026-08-13",
+      "estimated_value": "50000",
+      "location": "Medina, NY",
+      "fit_score": 72,
+      "fit_notes": "Not pure brand/web, but strong partner angle for signage, wayfinding, presentation design, public-facing graphics, and placemaking.",
+      "recommended_action": "Find engineering or landscape architecture bidders and offer creative/signage subcontract support.",
+      "raw_text": "Village of Medina Canal Basin Park / Waterfront Gateway RFP. Funding includes NY Forward and ZEV infrastructure grant. Contact: Mayor Deborah L. Padoleski."
+    }
+  ]
+}

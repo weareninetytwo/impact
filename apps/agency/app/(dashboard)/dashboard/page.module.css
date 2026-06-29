@@ -67,6 +67,16 @@
   gap: 0.25rem;
 }
 
+.statLink {
+  text-decoration: none;
+  color: inherit;
+}
+
+.statLink:hover .stat {
+  border-color: #94a3b8;
+  background: #f8fafc;
+}
+
 .statValue {
   font-size: 1.75rem;
   font-weight: 700;

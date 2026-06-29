@@ -60,7 +60,7 @@ curl -X POST http://localhost:3000/api/signals/import \
 2. **Actions → Import from OpenAPI**
 3. Upload `docs/openapi-impact-ingest.json`
 4. Set **Authentication → API Key → Bearer** = your `IMPACT_INGEST_SECRET`
-5. Server URL: `https://impact-rosy.vercel.app`
+5. Server URL: `https://impact.weareninetytwo.xyz` (or `https://impact-rosy.vercel.app`)
 
 ## Payload shape
 
@@ -91,10 +91,11 @@ curl -X POST http://localhost:3000/api/signals/import \
 | Step | Detail |
 |------|--------|
 | **Auth** | `Authorization: Bearer {IMPACT_INGEST_SECRET}` |
-| **Dedupe** | `company_name + source_url`, or `company_name + opportunity_title` if no URL |
-| **Scoring** | Runs scoring engine; uses `fit_score` from payload when provided |
-| **Source docs** | `raw_text` or `source_url` → Knowledge item linked to opportunity |
-| **Response** | `{ created, updated, skipped, errors, opportunity_ids, knowledge_ids }` |
+| **Default mode** | `review` — queues to `/signals/review` (Epic 3B). Use `mode: "direct"` for immediate pipeline. |
+| **Dedupe** | On approve/direct: `company_name + source_url`, or `company_name + opportunity_title` |
+| **Scoring** | Runs on approve/direct; uses `fit_score` from payload when provided |
+| **Source docs** | `raw_text` or `source_url` → Knowledge item linked on approve/merge |
+| **Response** | `{ created, updated, skipped, queued, errors, opportunity_ids, knowledge_ids, signal_import_ids }` |
 
 ## Non-goals (Epic 3A)
 
@@ -112,5 +113,6 @@ curl -X POST http://localhost:3000/api/signals/import \
 
 ## Next
 
-- Epic 3B: scheduled scrapers → same ingest API
+- Epic 3B: [Import Review Queue](./epic3b-import-review-queue.md) — default ingest mode
+- Epic 3C: scheduled scrapers → same ingest API
 - Pursuit plan generation from opportunity + linked knowledge

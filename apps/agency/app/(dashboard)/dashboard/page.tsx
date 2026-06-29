@@ -1,5 +1,6 @@
 import Link from "next/link";
 import { fetchDashboardStats, fetchOpportunities } from "@/lib/opportunities/actions";
+import { fetchPendingImportCount } from "@/lib/signals/actions";
 import { GradeBadge } from "@/components/opportunities/grade-badge";
 import styles from "./page.module.css";
 
@@ -12,9 +13,10 @@ function formatCurrency(value: number): string {
 }
 
 export default async function DashboardPage() {
-  const [stats, opportunities] = await Promise.all([
+  const [stats, opportunities, pendingImports] = await Promise.all([
     fetchDashboardStats(),
     fetchOpportunities(),
+    fetchPendingImportCount(),
   ]);
 
   const aGrade = opportunities.filter((o) => o.lead_grade === "A");
@@ -46,6 +48,12 @@ export default async function DashboardPage() {
           <span className={styles.statValue}>{stats.needs_contact}</span>
           <span className={styles.statLabel}>Needs contact</span>
         </div>
+        <Link href="/signals/review" className={styles.statLink}>
+          <div className={styles.stat}>
+            <span className={styles.statValue}>{pendingImports}</span>
+            <span className={styles.statLabel}>Pending imports</span>
+          </div>
+        </Link>
         <div className={styles.stat}>
           <span className={styles.statValue}>{stats.proposals_due}</span>
           <span className={styles.statLabel}>Proposals due</span>

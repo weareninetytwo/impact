@@ -1,0 +1,60 @@
+.page {
+  max-width: 720px;
+}
+
+.header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 1rem;
+  margin-bottom: 1.25rem;
+}
+
+.title {
+  font-size: 1.75rem;
+  font-weight: 700;
+  margin: 0 0 0.5rem;
+}
+
+.subtitle {
+  color: #64748b;
+  margin: 0;
+  line-height: 1.5;
+}
+
+.backLink {
+  flex-shrink: 0;
+  font-size: 0.875rem;
+  color: #475569;
+  text-decoration: none;
+}
+
+.backLink:hover {
+  color: #0f172a;
+}
+
+.list {
+  display: grid;
+  gap: 1rem;
+}
+
+.empty {
+  padding: 1.25rem;
+  border: 1px dashed #cbd5e1;
+  border-radius: 10px;
+  background: #f8fafc;
+  color: #475569;
+}
+
+.empty p {
+  margin: 0 0 0.5rem;
+}
+
+.emptyHint {
+  font-size: 0.875rem;
+  line-height: 1.5;
+}
+
+.emptyHint a {
+  color: #2563eb;
+}

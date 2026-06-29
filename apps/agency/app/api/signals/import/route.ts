@@ -28,7 +28,10 @@ export async function POST(request: Request) {
   }
 
   try {
-    const result = await importSignalItems(validated.payload);
+    const result = await importSignalItems(validated.payload, {
+      mode: validated.mode,
+      importSource: validated.importSource,
+    });
     return NextResponse.json(result);
   } catch (err) {
     return NextResponse.json(

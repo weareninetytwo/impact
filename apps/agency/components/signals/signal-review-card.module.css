@@ -1,0 +1,171 @@
+.card {
+  padding: 1rem;
+  border: 1px solid #e2e8f0;
+  border-radius: 10px;
+  background: #fff;
+}
+
+.top {
+  display: flex;
+  justify-content: space-between;
+  gap: 1rem;
+  align-items: flex-start;
+  margin-bottom: 0.75rem;
+}
+
+.company {
+  margin: 0 0 0.25rem;
+  font-size: 0.8125rem;
+  color: #64748b;
+  font-weight: 600;
+}
+
+.title {
+  margin: 0;
+  font-size: 1.0625rem;
+  font-weight: 700;
+  line-height: 1.35;
+}
+
+.meta {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 0.35rem;
+  flex-shrink: 0;
+}
+
+.score {
+  font-size: 0.875rem;
+  font-weight: 700;
+  color: #0f172a;
+}
+
+.badge {
+  font-size: 0.6875rem;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  padding: 0.15rem 0.45rem;
+  border-radius: 999px;
+  background: #f1f5f9;
+  color: #475569;
+}
+
+.summary {
+  margin: 0 0 0.75rem;
+  color: #334155;
+  font-size: 0.9375rem;
+  line-height: 1.5;
+}
+
+.details {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 0.5rem 1rem;
+  margin: 0 0 0.75rem;
+}
+
+.details div {
+  min-width: 0;
+}
+
+.details dt {
+  font-size: 0.6875rem;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  color: #94a3b8;
+  margin-bottom: 0.15rem;
+}
+
+.details dd {
+  margin: 0;
+  font-size: 0.875rem;
+  color: #0f172a;
+}
+
+.notes,
+.action {
+  margin: 0 0 0.5rem;
+  font-size: 0.875rem;
+  line-height: 1.45;
+  color: #475569;
+}
+
+.link {
+  display: inline-block;
+  margin-bottom: 0.75rem;
+  font-size: 0.875rem;
+  color: #2563eb;
+}
+
+.error {
+  margin: 0 0 0.75rem;
+  color: #b91c1c;
+  font-size: 0.875rem;
+}
+
+.actions,
+.mergeActions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+}
+
+.actions button,
+.mergeActions button {
+  flex: 1 1 auto;
+  min-height: 44px;
+  border-radius: 8px;
+  border: 1px solid transparent;
+  font-size: 0.9375rem;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.approve {
+  background: #0f172a;
+  color: #fff;
+}
+
+.merge {
+  background: #fff;
+  border-color: #cbd5e1;
+  color: #0f172a;
+}
+
+.skip {
+  background: #fff;
+  border-color: #fecaca;
+  color: #b91c1c;
+}
+
+.mergeBox {
+  display: grid;
+  gap: 0.5rem;
+}
+
+.select {
+  width: 100%;
+  min-height: 44px;
+  border: 1px solid #cbd5e1;
+  border-radius: 8px;
+  padding: 0.5rem 0.75rem;
+  font-size: 0.9375rem;
+}
+
+.mergeConfirm {
+  background: #0f172a;
+  color: #fff;
+}
+
+.mergeCancel {
+  background: #fff;
+  border-color: #cbd5e1;
+  color: #0f172a;
+}
+
+@media (min-width: 640px) {
+  .details {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+}

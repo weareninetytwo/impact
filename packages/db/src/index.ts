@@ -40,3 +40,11 @@ export {
   validateSignalIngestItem,
   importSignalItems,
 } from "./signals/ingest";
+export {
+  listPendingSignalImports,
+  getSignalImport,
+  countPendingSignalImports,
+  approveSignalImport,
+  mergeSignalImport,
+  skipSignalImport,
+} from "./signals/import-repository";
