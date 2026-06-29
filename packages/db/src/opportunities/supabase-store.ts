@@ -1,4 +1,4 @@
-import type { Opportunity, OpportunityStage } from "@impact/shared";
+import type { Opportunity, OpportunityStage, ListOpportunitiesOptions } from "@impact/shared";
 import { DEFAULT_TENANT_ID } from "@impact/shared";
 import { buildSignalIngestDedupeKey } from "@impact/engines";
 import { createServerClient } from "../client";
@@ -25,6 +25,7 @@ type DbRow = {
   next_action: string;
   recommended_action: string;
   notes: string | null;
+  owner_user_id: string | null;
   dedupe_key: string;
   created_at: string;
   updated_at: string;
@@ -53,6 +54,7 @@ function rowToOpportunity(row: DbRow): Opportunity {
     next_action: row.next_action,
     recommended_action: row.recommended_action,
     notes: row.notes,
+    owner_user_id: row.owner_user_id ?? null,
     created_at: row.created_at,
     updated_at: row.updated_at,
   };
@@ -83,6 +85,7 @@ function opportunityToRow(opp: Opportunity): Omit<DbRow, "dedupe_key"> & {
     next_action: opp.next_action,
     recommended_action: opp.recommended_action,
     notes: opp.notes,
+    owner_user_id: opp.owner_user_id,
     dedupe_key: buildSignalIngestDedupeKey(
       opp.company_name,
       opp.source_url,
@@ -115,13 +118,22 @@ function supabaseErrorMessage(err: unknown): string {
   return msg;
 }
 
-export async function supabaseListOpportunities(): Promise<Opportunity[]> {
+export async function supabaseListOpportunities(
+  options?: ListOpportunitiesOptions,
+): Promise<Opportunity[]> {
+  const tenantId = options?.tenantId ?? DEFAULT_TENANT_ID;
   try {
-    const { data, error } = await getClient()
+    let query = getClient()
       .from("opportunity_records")
       .select("*")
-      .eq("tenant_id", DEFAULT_TENANT_ID)
+      .eq("tenant_id", tenantId)
       .order("total_score", { ascending: false });
+
+    if (options?.scope === "mine" && options.userId) {
+      query = query.eq("owner_user_id", options.userId);
+    }
+
+    const { data, error } = await query;
 
     if (error) throw new Error(error.message);
     return (data as DbRow[]).map(rowToOpportunity);

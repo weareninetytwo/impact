@@ -21,6 +21,14 @@ export default function SignalsPage() {
           </p>
         </Link>
 
+        <Link href="/signals/opportunity-watch" className={styles.card}>
+          <h2 className={styles.cardTitle}>Opportunity Watch</h2>
+          <p className={styles.cardBody}>
+            Run daily discovery inside Impact — queues new leads to review
+            without relying on ChatGPT chat updates alone.
+          </p>
+        </Link>
+
         <Link href="/signals/scout" className={styles.card}>
           <h2 className={styles.cardTitle}>Scheduled Scout</h2>
           <p className={styles.cardBody}>
@@ -40,9 +48,9 @@ export default function SignalsPage() {
         <div className={styles.cardMuted}>
           <h2 className={styles.cardTitle}>API ingest</h2>
           <p className={styles.cardBody}>
-            <code>POST /api/signals/import</code> with Bearer{" "}
-            <code>IMPACT_INGEST_SECRET</code>. See{" "}
-            <code>docs/epic3a-chatgpt-ingest.md</code>.
+            <code>POST /api/signals/import</code> or{" "}
+            <code>POST /api/opportunity-watch/import</code> with Bearer{" "}
+            <code>IMPACT_INGEST_SECRET</code>.
           </p>
         </div>
       </div>

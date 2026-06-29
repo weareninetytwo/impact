@@ -1,5 +1,6 @@
 import type {
   DashboardStats,
+  ListOpportunitiesOptions,
   Opportunity,
   OpportunityInput,
   OpportunityStage,
@@ -36,16 +37,27 @@ function sortByScore(a: Opportunity, b: Opportunity): number {
   return b.total_score - a.total_score;
 }
 
-async function listAll(): Promise<Opportunity[]> {
+async function listAll(
+  options?: ListOpportunitiesOptions,
+): Promise<Opportunity[]> {
   if (isSupabasePersistenceEnabled()) {
-    return supabaseListOpportunities();
+    return supabaseListOpportunities(options);
   }
   const items = await readOpportunities();
-  return items.sort(sortByScore);
+  let filtered = items;
+  if (options?.scope === "mine" && options.userId) {
+    filtered = items.filter((o) => o.owner_user_id === options.userId);
+  }
+  if (options?.tenantId) {
+    filtered = filtered.filter((o) => o.tenant_id === options.tenantId);
+  }
+  return filtered.sort(sortByScore);
 }
 
-export async function listOpportunities(): Promise<Opportunity[]> {
-  return listAll();
+export async function listOpportunities(
+  options?: ListOpportunitiesOptions,
+): Promise<Opportunity[]> {
+  return listAll(options);
 }
 
 export async function getOpportunity(id: string): Promise<Opportunity | null> {
@@ -76,6 +88,7 @@ export async function getDashboardStats(): Promise<DashboardStats> {
 
 export async function createOpportunity(
   input: OpportunityInput,
+  context?: { tenantId?: string; ownerUserId?: string | null },
 ): Promise<CreateResult> {
   const key = buildSignalIngestDedupeKey(
     input.company_name,
@@ -83,9 +96,14 @@ export async function createOpportunity(
     input.title,
   );
 
+  const buildOpts = {
+    tenantId: context?.tenantId,
+    ownerUserId: context?.ownerUserId ?? null,
+  };
+
   if (isSupabasePersistenceEnabled()) {
     const existing = await supabaseFindByDedupeKey(key);
-    const record = buildOpportunityRecord(input, existing ?? undefined);
+    const record = buildOpportunityRecord(input, existing ?? undefined, buildOpts);
     const saved = await supabaseUpsertOpportunity(record);
     return {
       opportunity: saved,
@@ -101,13 +119,17 @@ export async function createOpportunity(
   );
 
   if (existingIndex >= 0) {
-    const updated = buildOpportunityRecord(input, items[existingIndex]);
+    const updated = buildOpportunityRecord(
+      input,
+      items[existingIndex],
+      buildOpts,
+    );
     items[existingIndex] = updated;
     await writeOpportunities(items);
     return { opportunity: updated, duplicate: true, updated: true };
   }
 
-  const created = buildOpportunityRecord(input);
+  const created = buildOpportunityRecord(input, undefined, buildOpts);
   items.push(created);
   await writeOpportunities(items);
   return { opportunity: created, duplicate: false, updated: false };

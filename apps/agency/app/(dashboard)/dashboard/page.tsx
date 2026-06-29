@@ -1,8 +1,18 @@
 import Link from "next/link";
 import { fetchDashboardStats, fetchOpportunities } from "@/lib/opportunities/actions";
 import { fetchPendingImportCount } from "@/lib/signals/actions";
+import { fetchLatestOpportunityWatchRun } from "@/lib/opportunity-watch/actions";
 import { GradeBadge } from "@/components/opportunities/grade-badge";
 import styles from "./page.module.css";
+
+function formatWatchWhen(iso: string | null | undefined): string {
+  if (!iso) return "Never";
+  try {
+    return new Date(iso).toLocaleString();
+  } catch {
+    return iso;
+  }
+}
 
 function formatCurrency(value: number): string {
   return new Intl.NumberFormat("en-US", {
@@ -13,10 +23,11 @@ function formatCurrency(value: number): string {
 }
 
 export default async function DashboardPage() {
-  const [stats, opportunities, pendingImports] = await Promise.all([
+  const [stats, opportunities, pendingImports, lastWatch] = await Promise.all([
     fetchDashboardStats(),
     fetchOpportunities(),
     fetchPendingImportCount(),
+    fetchLatestOpportunityWatchRun(),
   ]);
 
   const aGrade = opportunities.filter((o) => o.lead_grade === "A");
@@ -51,7 +62,18 @@ export default async function DashboardPage() {
         <Link href="/signals/review" className={styles.statLink}>
           <div className={styles.stat}>
             <span className={styles.statValue}>{pendingImports}</span>
-            <span className={styles.statLabel}>Pending imports</span>
+            <span className={styles.statLabel}>Pending signals</span>
+          </div>
+        </Link>
+        <Link href="/signals/opportunity-watch" className={styles.statLink}>
+          <div className={styles.stat}>
+            <span className={styles.statValueSmall}>
+              {lastWatch ? lastWatch.queued_count : "—"}
+            </span>
+            <span className={styles.statLabel}>
+              Last Watch
+              {lastWatch ? ` · ${formatWatchWhen(lastWatch.started_at)}` : ""}
+            </span>
           </div>
         </Link>
         <div className={styles.stat}>

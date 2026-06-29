@@ -42,6 +42,7 @@ export {
 } from "./signals/ingest";
 export {
   listPendingSignalImports,
+  listRecentSignalImports,
   getSignalImport,
   countPendingSignalImports,
   approveSignalImport,
@@ -58,3 +59,19 @@ export {
   SCOUT_SOURCE_PRESETS,
 } from "./scout/repository";
 export { runScout, runScoutSource, runAllEnabledScoutSources } from "./scout/runner";
+export {
+  runOpportunityWatch,
+  listOpportunityWatchRuns,
+  getLatestOpportunityWatchRun,
+} from "./opportunity-watch/runner";
+export {
+  getTenantBySlug,
+  getTenantById,
+  createTenantRecord,
+  getAppUser,
+  upsertAppUser,
+  listTenantMembers,
+  resolveDefaultTenantId,
+  slugify,
+} from "./auth/repository";
+export type { TenantRecord, AppUserRecord } from "./auth/repository";

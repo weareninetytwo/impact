@@ -22,6 +22,8 @@ export function buildOpportunityRecord(
   options?: {
     fit_score?: number;
     recommended_action?: string;
+    ownerUserId?: string | null;
+    tenantId?: string;
   },
 ): Opportunity {
   const scored = scoreOpportunity(input);
@@ -39,7 +41,7 @@ export function buildOpportunityRecord(
 
   return {
     id: existing?.id ?? randomUUID(),
-    tenant_id: existing?.tenant_id ?? DEFAULT_TENANT_ID,
+    tenant_id: existing?.tenant_id ?? options?.tenantId ?? DEFAULT_TENANT_ID,
     company_name: input.company_name.trim(),
     company_website: input.company_website?.trim() || null,
     title: input.title.trim(),
@@ -59,6 +61,7 @@ export function buildOpportunityRecord(
     next_action: scored.next_action,
     recommended_action: scored.recommended_action,
     notes: input.notes?.trim() || null,
+    owner_user_id: existing?.owner_user_id ?? options?.ownerUserId ?? null,
     created_at: existing?.created_at ?? now,
     updated_at: now,
   };

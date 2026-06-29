@@ -8,15 +8,13 @@ import styles from "./app-shell.module.css";
 
 interface MobileShellProps {
   tenantName: string;
-  userLabel: string;
-  authLabel: string;
+  userMenu: React.ReactNode;
   children: React.ReactNode;
 }
 
 export function MobileShell({
   tenantName,
-  userLabel,
-  authLabel,
+  userMenu,
   children,
 }: MobileShellProps) {
   const [navOpen, setNavOpen] = useState(false);
@@ -67,10 +65,7 @@ export function MobileShell({
           >
             ☰
           </button>
-          <div className={styles.headerMeta}>
-            <span className={styles.authBadge}>{authLabel}</span>
-            <span className={styles.user}>{userLabel}</span>
-          </div>
+          <div className={styles.headerMeta}>{userMenu}</div>
         </header>
         <main className={styles.content}>{children}</main>
       </div>

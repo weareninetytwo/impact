@@ -74,6 +74,7 @@ export interface Opportunity {
   next_action: string;
   recommended_action: string;
   notes: string | null;
+  owner_user_id: string | null;
   created_at: string;
   updated_at: string;
 }
@@ -91,6 +92,14 @@ export interface OpportunityInput {
   notes?: string | null;
   next_action?: string;
   stage?: OpportunityStage;
+}
+
+export type LeadScope = "mine" | "team";
+
+export interface ListOpportunitiesOptions {
+  tenantId?: string;
+  scope?: LeadScope;
+  userId?: string | null;
 }
 
 export interface DashboardStats {

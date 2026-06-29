@@ -42,6 +42,13 @@ export async function listPendingSignalImports(): Promise<SignalImport[]> {
   return listAll("pending");
 }
 
+export async function listRecentSignalImports(
+  limit = 15,
+): Promise<SignalImport[]> {
+  const all = await listAll();
+  return all.slice(0, limit);
+}
+
 export async function getSignalImport(
   id: string,
 ): Promise<SignalImport | null> {

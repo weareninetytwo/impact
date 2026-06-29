@@ -1,28 +1,35 @@
 import { NextResponse } from "next/server";
 import type { NextRequest } from "next/server";
+import { refreshSupabaseSession } from "@/lib/supabase/middleware";
+import { isSupabaseAuthEnabled } from "@/lib/supabase/env";
 
-/**
- * Basic auth guard when IMPACT_BASIC_AUTH_PASSWORD is set.
- * Browser prompts for username (any) + password on first visit.
- * Remove or unset env var to disable (local dev only).
- */
-export function middleware(request: NextRequest) {
-  const path = request.nextUrl.pathname;
+const PUBLIC_PATHS = [
+  "/login",
+  "/signup",
+  "/auth/callback",
+];
 
-  // Signal ingest API uses Bearer token auth (Custom GPT / automation)
-  if (path === "/api/signals/import") {
-    return NextResponse.next();
-  }
+const API_PUBLIC_PATHS = [
+  "/api/signals/import",
+  "/api/scout/run",
+  "/api/opportunity-watch/import",
+  "/api/opportunity-watch/run",
+  "/api/health",
+];
 
-  // Scheduled scout cron uses Bearer IMPACT_SCOUT_SECRET
-  if (path === "/api/scout/run") {
-    return NextResponse.next();
-  }
+function isPublicPath(path: string): boolean {
+  return (
+    PUBLIC_PATHS.some((p) => path === p || path.startsWith(`${p}/`)) ||
+    API_PUBLIC_PATHS.some((p) => path === p)
+  );
+}
 
-  const password = process.env.IMPACT_BASIC_AUTH_PASSWORD?.trim().replace(/[^\x00-\xFF]/g, "");
-  if (!password) {
-    return NextResponse.next();
-  }
+function checkBasicAuth(request: NextRequest): NextResponse | null {
+  const password = process.env.IMPACT_BASIC_AUTH_PASSWORD?.trim().replace(
+    /[^\x00-\xFF]/g,
+    "",
+  );
+  if (!password) return null;
 
   const authHeader = request.headers.get("authorization");
   if (authHeader?.startsWith("Basic ")) {
@@ -31,9 +38,7 @@ export function middleware(request: NextRequest) {
       const decoded = atob(encoded);
       const colon = decoded.indexOf(":");
       const provided = colon >= 0 ? decoded.slice(colon + 1) : decoded;
-      if (provided === password) {
-        return NextResponse.next();
-      }
+      if (provided === password) return null;
     } catch {
       /* invalid base64 */
     }
@@ -45,6 +50,42 @@ export function middleware(request: NextRequest) {
       "WWW-Authenticate": 'Basic realm="Impact", charset="UTF-8"',
     },
   });
+}
+
+export async function middleware(request: NextRequest) {
+  const path = request.nextUrl.pathname;
+
+  if (isPublicPath(path)) {
+    if (isSupabaseAuthEnabled() && PUBLIC_PATHS.some((p) => path.startsWith(p))) {
+      const { response } = await refreshSupabaseSession(request);
+      return response;
+    }
+    return NextResponse.next();
+  }
+
+  if (isSupabaseAuthEnabled()) {
+    const { response, user } = await refreshSupabaseSession(request);
+
+    if (!user) {
+      const loginUrl = request.nextUrl.clone();
+      loginUrl.pathname = "/login";
+      loginUrl.searchParams.set(
+        "next",
+        `${path}${request.nextUrl.search}`,
+      );
+      return NextResponse.redirect(loginUrl);
+    }
+
+    const basicBlock = checkBasicAuth(request);
+    if (basicBlock) return basicBlock;
+
+    return response;
+  }
+
+  const basicBlock = checkBasicAuth(request);
+  if (basicBlock) return basicBlock;
+
+  return NextResponse.next();
 }
 
 export const config = {

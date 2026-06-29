@@ -12,10 +12,16 @@ import {
   parseCsvOpportunities,
   parsePasteOpportunities,
 } from "@impact/db";
-import type { OpportunityInput, OpportunityStage } from "@impact/shared";
+import type { OpportunityInput, OpportunityStage, LeadScope } from "@impact/shared";
+import { getRequestContext } from "@/lib/auth/context";
 
-export async function fetchOpportunities() {
-  return listOpportunities();
+export async function fetchOpportunities(scope: LeadScope = "team") {
+  const ctx = await getRequestContext();
+  return listOpportunities({
+    tenantId: ctx.tenantId,
+    scope,
+    userId: ctx.userId,
+  });
 }
 
 export async function fetchOpportunity(id: string) {
@@ -37,7 +43,11 @@ export async function createOpportunityAction(input: OpportunityInput) {
     return { error: "Source is required" };
   }
 
-  const result = await createOpportunity(input);
+  const ctx = await getRequestContext();
+  const result = await createOpportunity(input, {
+    tenantId: ctx.tenantId,
+    ownerUserId: ctx.userId,
+  });
   revalidatePath("/dashboard");
   revalidatePath("/opportunities");
   return { success: true, ...result };

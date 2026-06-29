@@ -1,7 +1,13 @@
 import Link from "next/link";
 import { fetchOpportunities } from "@/lib/opportunities/actions";
 import { GradeBadge } from "@/components/opportunities/grade-badge";
+import { LeadScopeTabs } from "@/components/opportunities/lead-scope-tabs";
+import type { LeadScope } from "@impact/shared";
 import styles from "./page.module.css";
+
+function parseScope(value?: string): LeadScope {
+  return value === "mine" ? "mine" : "team";
+}
 
 function formatCurrency(value: number | null): string {
   if (value == null) return "—";
@@ -16,8 +22,14 @@ function formatStage(stage: string): string {
   return stage.replace(/_/g, " ");
 }
 
-export default async function OpportunitiesPage() {
-  const opportunities = await fetchOpportunities();
+export default async function OpportunitiesPage({
+  searchParams,
+}: {
+  searchParams: Promise<{ scope?: string }>;
+}) {
+  const params = await searchParams;
+  const scope = parseScope(params.scope);
+  const opportunities = await fetchOpportunities(scope);
 
   return (
     <div className={styles.page}>
@@ -30,6 +42,7 @@ export default async function OpportunitiesPage() {
           </p>
         </div>
         <div className={styles.actions}>
+          <LeadScopeTabs active={scope} />
           <Link href="/opportunities/new" className={styles.primaryBtn}>
             + New opportunity
           </Link>
