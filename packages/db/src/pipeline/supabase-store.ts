@@ -2,24 +2,24 @@ import type { PipelineArtifact, PipelineArtifactType } from "@impact/shared";
 import { DEFAULT_TENANT_ID } from "@impact/shared";
 import { createServerClient } from "../client";
 
-type Row = {
+const PIPELINE_SOURCE = "impact-pipeline";
+
+type KnowledgeRow = {
   id: string;
   tenant_id: string;
-  opportunity_id: string | null;
-  artifact_type: string;
   title: string;
-  status: string;
-  payload: Record<string, unknown>;
+  type: string;
+  source: string;
+  tags: string[];
+  summary: string | null;
+  content_text: string;
+  file_name: string | null;
+  file_path: string | null;
+  mime_type: string | null;
+  chunk_count: number;
   created_at: string;
   updated_at: string;
 };
-
-function rowToArtifact(row: Row): PipelineArtifact {
-  return {
-    ...row,
-    artifact_type: row.artifact_type as PipelineArtifactType,
-  };
-}
 
 function getClient() {
   const client = createServerClient();
@@ -27,73 +27,82 @@ function getClient() {
   return client;
 }
 
+function artifactToRow(artifact: PipelineArtifact): KnowledgeRow {
+  return {
+    id: artifact.id,
+    tenant_id: artifact.tenant_id,
+    title: artifact.title,
+    type: "other",
+    source: PIPELINE_SOURCE,
+    tags: [
+      "impact-pipeline",
+      artifact.artifact_type,
+      artifact.opportunity_id ?? "global",
+      artifact.status,
+    ],
+    summary: `${artifact.artifact_type} · ${artifact.status}`,
+    content_text: JSON.stringify(artifact),
+    file_name: null,
+    file_path: null,
+    mime_type: "application/json",
+    chunk_count: 0,
+    created_at: artifact.created_at,
+    updated_at: artifact.updated_at,
+  };
+}
+
+function rowToArtifact(row: KnowledgeRow): PipelineArtifact {
+  const parsed = JSON.parse(row.content_text) as PipelineArtifact;
+  return parsed;
+}
+
+async function listKnowledgePipelineRows(): Promise<KnowledgeRow[]> {
+  const { data, error } = await getClient()
+    .from("knowledge_items")
+    .select("*")
+    .eq("tenant_id", DEFAULT_TENANT_ID)
+    .eq("source", PIPELINE_SOURCE)
+    .order("created_at", { ascending: false });
+
+  if (error) throw new Error(error.message);
+  return (data as KnowledgeRow[]) ?? [];
+}
+
 export async function supabaseListPipelineArtifacts(
   artifactType?: PipelineArtifactType,
   opportunityId?: string,
 ): Promise<PipelineArtifact[]> {
-  let query = getClient()
-    .from("pipeline_artifacts")
-    .select("*")
-    .eq("tenant_id", DEFAULT_TENANT_ID)
-    .order("created_at", { ascending: false });
+  let rows = await listKnowledgePipelineRows();
+  let artifacts = rows.map(rowToArtifact);
 
-  if (artifactType) query = query.eq("artifact_type", artifactType);
-  if (opportunityId) query = query.eq("opportunity_id", opportunityId);
+  if (artifactType) {
+    artifacts = artifacts.filter((a) => a.artifact_type === artifactType);
+  }
+  if (opportunityId) {
+    artifacts = artifacts.filter((a) => a.opportunity_id === opportunityId);
+  }
 
-  const { data, error } = await query;
-  if (error) throw new Error(error.message);
-  return (data as Row[]).map(rowToArtifact);
+  return artifacts.sort(
+    (a, b) =>
+      new Date(b.created_at).getTime() - new Date(a.created_at).getTime(),
+  );
 }
 
 export async function supabaseUpsertPipelineArtifact(
   artifact: PipelineArtifact,
 ): Promise<PipelineArtifact> {
-  const row = {
-    id: artifact.id,
-    tenant_id: artifact.tenant_id,
-    opportunity_id: artifact.opportunity_id,
-    artifact_type: artifact.artifact_type,
-    title: artifact.title,
-    status: artifact.status,
-    payload: artifact.payload,
-    created_at: artifact.created_at,
-    updated_at: artifact.updated_at,
-  };
-
+  const row = artifactToRow(artifact);
   const { data, error } = await getClient()
-    .from("pipeline_artifacts")
+    .from("knowledge_items")
     .upsert(row)
     .select("*")
     .single();
 
   if (error) throw new Error(error.message);
-  return rowToArtifact(data as Row);
-}
-
-export async function supabaseDeletePipelineArtifactsForOpportunity(
-  opportunityId: string,
-  artifactType: PipelineArtifactType,
-): Promise<void> {
-  const { error } = await getClient()
-    .from("pipeline_artifacts")
-    .delete()
-    .eq("tenant_id", DEFAULT_TENANT_ID)
-    .eq("opportunity_id", opportunityId)
-    .eq("artifact_type", artifactType);
-
-  if (error) throw new Error(error.message);
+  return rowToArtifact(data as KnowledgeRow);
 }
 
 export async function supabaseGetLatestAutomationRun(): Promise<PipelineArtifact | null> {
-  const { data, error } = await getClient()
-    .from("pipeline_artifacts")
-    .select("*")
-    .eq("tenant_id", DEFAULT_TENANT_ID)
-    .eq("artifact_type", "automation_run")
-    .order("created_at", { ascending: false })
-    .limit(1)
-    .maybeSingle();
-
-  if (error) throw new Error(error.message);
-  return data ? rowToArtifact(data as Row) : null;
+  const items = await supabaseListPipelineArtifacts("automation_run");
+  return items[0] ?? null;
 }

@@ -58,6 +58,7 @@ export async function supabaseListKnowledgeItems(): Promise<KnowledgeItem[]> {
     .from("knowledge_items")
     .select("*")
     .eq("tenant_id", DEFAULT_TENANT_ID)
+    .neq("source", "impact-pipeline")
     .order("updated_at", { ascending: false });
 
   if (error) throw new Error(error.message);

@@ -43,12 +43,7 @@ async function listAll(
   opportunityId?: string,
 ): Promise<PipelineArtifact[]> {
   if (isSupabasePersistenceEnabled()) {
-    try {
-      return await supabaseListPipelineArtifacts(artifactType, opportunityId);
-    } catch (err) {
-      const message = err instanceof Error ? err.message : String(err);
-      if (!message.includes("pipeline_artifacts")) throw err;
-    }
+    return supabaseListPipelineArtifacts(artifactType, opportunityId);
   }
 
   let records = await readPipelineStore();
@@ -68,12 +63,7 @@ async function save(record: PipelineArtifact): Promise<PipelineArtifact> {
   const updated = { ...record, updated_at: nowIso() };
 
   if (isSupabasePersistenceEnabled()) {
-    try {
-      return await supabaseUpsertPipelineArtifact(updated);
-    } catch (err) {
-      const message = err instanceof Error ? err.message : String(err);
-      if (!message.includes("pipeline_artifacts")) throw err;
-    }
+    return supabaseUpsertPipelineArtifact(updated);
   }
 
   const records = await readPipelineStore();
@@ -159,12 +149,7 @@ export async function saveAutomationRun(
 
 export async function getLatestAutomationRun(): Promise<PipelineArtifact | null> {
   if (isSupabasePersistenceEnabled()) {
-    try {
-      return await supabaseGetLatestAutomationRun();
-    } catch (err) {
-      const message = err instanceof Error ? err.message : String(err);
-      if (!message.includes("pipeline_artifacts")) throw err;
-    }
+    return supabaseGetLatestAutomationRun();
   }
   const runs = await listAll("automation_run");
   return runs[0] ?? null;
