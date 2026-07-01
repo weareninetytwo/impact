@@ -3,11 +3,5 @@
   "buildCommand": "npm run build --workspace=@impact/agency",
   "installCommand": "npm install",
   "framework": "nextjs",
-  "outputDirectory": "apps/agency/.next",
-  "crons": [
-    {
-      "path": "/api/automation/run",
-      "schedule": "0 11 * * *"
-    }
-  ]
+  "outputDirectory": "apps/agency/.next"
 }
