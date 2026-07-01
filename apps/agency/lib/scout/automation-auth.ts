@@ -1,6 +1,10 @@
 import { verifyScoutAuth } from "./scout-auth";
 
-/** Scout secret or Vercel CRON_SECRET for scheduled automation runs. */
+/**
+ * Scout secret or Vercel CRON_SECRET for scheduled automation runs.
+ * Prefer `Authorization: Bearer <secret>` — query `?secret=` is legacy compatibility
+ * (may appear in logs/history; avoid for new integrations).
+ */
 export function verifyAutomationAuth(
   authorizationHeader: string | null,
   querySecret?: string | null,
@@ -15,5 +19,6 @@ export function verifyAutomationAuth(
     if (token === cronSecret) return true;
   }
 
+  // Legacy compatibility for cron tools that cannot set headers.
   return querySecret?.trim() === cronSecret;
 }
