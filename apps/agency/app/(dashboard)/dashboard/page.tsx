@@ -3,10 +3,11 @@ import { fetchDashboardStats, fetchOpportunities } from "@/lib/opportunities/act
 import { fetchPendingImportCount } from "@/lib/signals/actions";
 import { fetchLatestOpportunityWatchRun } from "@/lib/opportunity-watch/actions";
 import { GradeBadge } from "@/components/opportunities/grade-badge";
+import { DashboardRefreshBar } from "@/components/dashboard/dashboard-refresh-bar";
 import styles from "./page.module.css";
 
-function formatWatchWhen(iso: string | null | undefined): string {
-  if (!iso) return "Never";
+function formatWhen(iso: string | null | undefined): string {
+  if (!iso) return "Unknown";
   try {
     return new Date(iso).toLocaleString();
   } catch {
@@ -23,7 +24,8 @@ function formatCurrency(value: number): string {
 }
 
 export default async function DashboardPage() {
-  const [stats, opportunities, pendingImports, lastWatch] = await Promise.all([
+  const dataAsOf = new Date().toISOString();
+  const [stats, opportunities, pendingReview, lastWatch] = await Promise.all([
     fetchDashboardStats(),
     fetchOpportunities(),
     fetchPendingImportCount(),
@@ -42,51 +44,65 @@ export default async function DashboardPage() {
         </p>
       </header>
 
+      <DashboardRefreshBar dataAsOf={dataAsOf} />
+
       <div className={styles.stats}>
+        <Link href="/signals/review" className={styles.statLink}>
+          <div className={styles.stat}>
+            <span className={styles.statValue}>{pendingReview}</span>
+            <span className={styles.statLabel}>Pending review</span>
+          </div>
+        </Link>
         <div className={styles.stat}>
           <span className={styles.statValue}>{stats.new_count}</span>
           <span className={styles.statLabel}>New opportunities</span>
         </div>
         <div className={styles.stat}>
-          <span className={styles.statValue}>{stats.a_grade}</span>
-          <span className={styles.statLabel}>A-grade opportunities</span>
-        </div>
-        <div className={styles.stat}>
-          <span className={styles.statValue}>{stats.ready_for_outreach}</span>
-          <span className={styles.statLabel}>Ready for outreach</span>
-        </div>
-        <div className={styles.stat}>
           <span className={styles.statValue}>{stats.needs_contact}</span>
-          <span className={styles.statLabel}>Needs contact</span>
+          <span className={styles.statLabel}>Contact needed</span>
         </div>
-        <Link href="/signals/review" className={styles.statLink}>
+        <Link href="/outreach" className={styles.statLink}>
           <div className={styles.stat}>
-            <span className={styles.statValue}>{pendingImports}</span>
-            <span className={styles.statLabel}>Pending signals</span>
-          </div>
-        </Link>
-        <Link href="/signals/opportunity-watch" className={styles.statLink}>
-          <div className={styles.stat}>
-            <span className={styles.statValueSmall}>
-              {lastWatch ? lastWatch.queued_count : "—"}
-            </span>
-            <span className={styles.statLabel}>
-              Last Watch
-              {lastWatch ? ` · ${formatWatchWhen(lastWatch.started_at)}` : ""}
-            </span>
+            <span className={styles.statValue}>{stats.ready_for_outreach}</span>
+            <span className={styles.statLabel}>Ready for outreach</span>
           </div>
         </Link>
         <div className={styles.stat}>
-          <span className={styles.statValue}>{stats.proposals_due}</span>
-          <span className={styles.statLabel}>Proposals due</span>
+          <span className={styles.statValue}>{stats.nurturing_count}</span>
+          <span className={styles.statLabel}>Nurturing</span>
+        </div>
+        <div className={styles.stat}>
+          <span className={styles.statValue}>{stats.in_proposal}</span>
+          <span className={styles.statLabel}>In proposal</span>
+        </div>
+        <div className={styles.stat}>
+          <span className={styles.statValue}>{stats.a_grade}</span>
+          <span className={styles.statLabel}>A-grade (open)</span>
         </div>
         <div className={styles.stat}>
           <span className={styles.statValue}>
-            {formatCurrency(stats.pipeline_value)}
+            {formatCurrency(stats.open_estimated_pipeline)}
           </span>
-          <span className={styles.statLabel}>Est. pipeline value</span>
+          <span className={styles.statLabel}>Open estimated pipeline</span>
         </div>
       </div>
+
+      {lastWatch && (
+        <section className={styles.lastRun}>
+          <h2 className={styles.lastRunTitle}>Last Opportunity Watch run</h2>
+          <p className={styles.lastRunBody}>
+            Queued by Last Watch: <strong>{lastWatch.queued_count}</strong>
+            {" · "}
+            Run at {formatWhen(lastWatch.started_at)}
+          </p>
+          <Link
+            href="/signals/opportunity-watch"
+            className={styles.lastRunLink}
+          >
+            View Opportunity Watch →
+          </Link>
+        </section>
+      )}
 
       <div className={styles.quick}>
         <Link href="/opportunities/new" className={styles.quickBtn}>

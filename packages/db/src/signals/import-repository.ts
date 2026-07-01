@@ -59,12 +59,16 @@ export async function getSignalImport(
   return records.find((r) => r.id === id) ?? null;
 }
 
-export async function countPendingSignalImports(): Promise<number> {
+export async function countPendingSignalImports(options?: {
+  tenantId?: string;
+}): Promise<number> {
   if (isSupabasePersistenceEnabled()) {
-    return supabaseCountPendingSignalImports();
+    return supabaseCountPendingSignalImports(options?.tenantId);
   }
   const records = await readSignalImports();
-  return records.filter((r) => r.status === "pending").length;
+  const pending = records.filter((r) => r.status === "pending");
+  if (!options?.tenantId) return pending.length;
+  return pending.filter((r) => r.tenant_id === options.tenantId).length;
 }
 
 export async function createPendingSignalImport(
