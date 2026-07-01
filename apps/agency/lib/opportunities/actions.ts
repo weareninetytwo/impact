@@ -29,7 +29,8 @@ export async function fetchOpportunity(id: string) {
 }
 
 export async function fetchDashboardStats() {
-  return getDashboardStats();
+  const ctx = await getRequestContext();
+  return getDashboardStats({ tenantId: ctx.tenantId });
 }
 
 export async function createOpportunityAction(input: OpportunityInput) {

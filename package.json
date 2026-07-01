@@ -10,6 +10,7 @@
     "build": "npm run build --workspace=@impact/agency",
     "lint": "npm run lint --workspace=@impact/agency",
     "typecheck": "npm run typecheck --workspaces --if-present",
+    "test": "npm run test --workspace=@impact/db",
     "deploy": "node scripts/deploy-production.mjs",
     "deploy:env": "node scripts/sync-vercel-env.mjs"
   },

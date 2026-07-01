@@ -1,10 +1,10 @@
 import type {
-  DashboardStats,
   ListOpportunitiesOptions,
   Opportunity,
   OpportunityInput,
   OpportunityStage,
 } from "@impact/shared";
+import { computeDashboardStats } from "./dashboard-stats";
 import { buildSignalIngestDedupeKey } from "@impact/engines";
 import { isSupabasePersistenceEnabled } from "../client";
 import { buildOpportunityRecord } from "./build";
@@ -68,22 +68,11 @@ export async function getOpportunity(id: string): Promise<Opportunity | null> {
   return items.find((o) => o.id === id) ?? null;
 }
 
-export async function getDashboardStats(): Promise<DashboardStats> {
-  const items = await listAll();
-  const open = items.filter((o) => !["won", "lost", "skip"].includes(o.stage));
-
-  return {
-    total: open.length,
-    new_count: open.filter((o) => o.stage === "new").length,
-    a_grade: open.filter((o) => o.lead_grade === "A").length,
-    ready_for_outreach: open.filter((o) => o.stage === "ready_for_outreach")
-      .length,
-    needs_contact: open.filter(
-      (o) => o.stage === "contact_needed" || o.stage === "reviewed",
-    ).length,
-    proposals_due: open.filter((o) => o.stage === "proposal").length,
-    pipeline_value: open.reduce((sum, o) => sum + (o.estimated_value ?? 0), 0),
-  };
+export async function getDashboardStats(options?: {
+  tenantId?: string;
+}): Promise<ReturnType<typeof computeDashboardStats>> {
+  const items = await listAll({ tenantId: options?.tenantId });
+  return computeDashboardStats(items, options?.tenantId);
 }
 
 export async function createOpportunity(
