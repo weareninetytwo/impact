@@ -7,7 +7,8 @@
     "build": "next build",
     "start": "next start",
     "lint": "next lint",
-    "typecheck": "tsc --noEmit"
+    "typecheck": "tsc --noEmit",
+    "test": "node --import tsx --test lib/scout/automation-auth.test.ts lib/scout/automation-run.test.ts"
   },
   "dependencies": {
     "@impact/db": "*",
@@ -24,6 +25,7 @@
     "@types/react-dom": "^19.1.5",
     "eslint": "^9.27.0",
     "eslint-config-next": "^15.3.3",
+    "tsx": "^4.21.0",
     "typescript": "^5.8.3"
   }
 }

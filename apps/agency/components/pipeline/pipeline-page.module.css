@@ -1,0 +1,100 @@
+.page {
+  max-width: 900px;
+}
+
+.header {
+  margin-bottom: 1.25rem;
+}
+
+.title {
+  font-size: 1.75rem;
+  font-weight: 700;
+  margin: 0 0 0.5rem;
+}
+
+.subtitle {
+  color: #64748b;
+  margin: 0;
+  line-height: 1.5;
+}
+
+.list {
+  display: grid;
+  gap: 0.75rem;
+}
+
+.card {
+  padding: 1rem 1.125rem;
+  border: 1px solid #e2e8f0;
+  border-radius: 10px;
+  background: #fff;
+}
+
+.cardTitle {
+  margin: 0 0 0.35rem;
+  font-size: 1rem;
+  font-weight: 700;
+}
+
+.cardTitle a {
+  color: inherit;
+  text-decoration: none;
+}
+
+.cardTitle a:hover {
+  color: #2563eb;
+}
+
+.meta {
+  margin: 0 0 0.5rem;
+  font-size: 0.8125rem;
+  color: #64748b;
+}
+
+.body {
+  margin: 0;
+  font-size: 0.875rem;
+  line-height: 1.55;
+  color: #475569;
+  white-space: pre-wrap;
+}
+
+.empty {
+  padding: 1.25rem;
+  border: 1px dashed #cbd5e1;
+  border-radius: 10px;
+  background: #f8fafc;
+  color: #475569;
+}
+
+.badge {
+  display: inline-block;
+  padding: 0.15rem 0.5rem;
+  border-radius: 999px;
+  font-size: 0.75rem;
+  font-weight: 600;
+  background: #f1f5f9;
+  color: #334155;
+}
+
+.actions {
+  display: flex;
+  gap: 0.5rem;
+  margin-top: 0.75rem;
+}
+
+.btn {
+  padding: 0.4rem 0.75rem;
+  border-radius: 8px;
+  border: 1px solid #e2e8f0;
+  background: #fff;
+  font-size: 0.8125rem;
+  font-weight: 600;
+  cursor: pointer;
+  text-decoration: none;
+  color: #334155;
+}
+
+.btn:hover {
+  background: #f8fafc;
+}

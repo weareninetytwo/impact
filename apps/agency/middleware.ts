@@ -12,6 +12,7 @@ const PUBLIC_PATHS = [
 const API_PUBLIC_PATHS = [
   "/api/signals/import",
   "/api/scout/run",
+  "/api/automation/run",
   "/api/opportunity-watch/import",
   "/api/opportunity-watch/run",
   "/api/health",

@@ -3,6 +3,7 @@
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import type { Opportunity, SignalImport } from "@impact/shared";
+import { stripHtml } from "@impact/shared";
 import {
   approveSignalImportAction,
   mergeSignalImportAction,
@@ -52,8 +53,8 @@ export function SignalReviewCard({
     <article className={styles.card}>
       <div className={styles.top}>
         <div>
-          <p className={styles.company}>{record.company_name}</p>
-          <h2 className={styles.title}>{record.opportunity_title}</h2>
+          <p className={styles.company}>{stripHtml(record.company_name)}</p>
+          <h2 className={styles.title}>{stripHtml(record.opportunity_title)}</h2>
         </div>
         <div className={styles.meta}>
           {record.fit_score != null && (
@@ -64,7 +65,7 @@ export function SignalReviewCard({
       </div>
 
       {record.signal_summary && (
-        <p className={styles.summary}>{record.signal_summary}</p>
+        <p className={styles.summary}>{stripHtml(record.signal_summary)}</p>
       )}
 
       <dl className={styles.details}>

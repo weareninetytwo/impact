@@ -109,6 +109,20 @@ export async function supabaseUpdateSignalImport(
   return rowToRecord(data as Row);
 }
 
+export async function supabaseSkipAllPendingSignalImports(
+  reviewedAt: string,
+): Promise<number> {
+  const { data, error } = await getClient()
+    .from("signal_imports")
+    .update({ status: "skipped", reviewed_at: reviewedAt })
+    .eq("tenant_id", DEFAULT_TENANT_ID)
+    .eq("status", "pending")
+    .select("id");
+
+  if (error) throw new Error(error.message);
+  return data?.length ?? 0;
+}
+
 export async function supabaseCountPendingSignalImports(): Promise<number> {
   const { count, error } = await getClient()
     .from("signal_imports")

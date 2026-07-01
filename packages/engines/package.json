@@ -5,12 +5,15 @@
   "main": "./src/index.ts",
   "types": "./src/index.ts",
   "scripts": {
-    "typecheck": "tsc --noEmit"
+    "typecheck": "tsc --noEmit",
+    "test": "node --import tsx --test src/outreach-draft.test.ts"
   },
   "dependencies": {
     "@impact/shared": "*"
   },
   "devDependencies": {
+    "@types/node": "^22.15.21",
+    "tsx": "^4.21.0",
     "typescript": "^5.8.3"
   }
 }
