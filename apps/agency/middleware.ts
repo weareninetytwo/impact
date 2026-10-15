@@ -14,6 +14,7 @@ const API_PUBLIC_PATHS = [
   "/api/scout/run",
   "/api/opportunity-watch/import",
   "/api/opportunity-watch/run",
+  "/api/quotes/import",
   "/api/health",
   "/api/auth/login",
   "/api/auth/logout",

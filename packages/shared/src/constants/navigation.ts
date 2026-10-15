@@ -44,7 +44,7 @@ export const MODULE_NAV: NavItem[] = [
   {
     label: "Nurture",
     href: "/nurture",
-    description: "Automated nurture sequences by grade",
+    description: "Quote follow-up and nurture sequences",
   },
   {
     label: "Outreach",
