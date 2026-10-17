@@ -1,5 +1,5 @@
 import type { SignalImport } from "@impact/shared";
-import { DEFAULT_TENANT_ID } from "@impact/shared";
+import { getTenantId } from "@impact/shared";
 import { createServerClient } from "../client";
 
 type Row = {
@@ -55,7 +55,7 @@ export async function supabaseListSignalImports(
   let query = getClient()
     .from("signal_imports")
     .select("*")
-    .eq("tenant_id", DEFAULT_TENANT_ID)
+    .eq("tenant_id", getTenantId())
     .order("created_at", { ascending: false });
 
   if (status) {
@@ -74,7 +74,7 @@ export async function supabaseGetSignalImport(
     .from("signal_imports")
     .select("*")
     .eq("id", id)
-    .eq("tenant_id", DEFAULT_TENANT_ID)
+    .eq("tenant_id", getTenantId())
     .maybeSingle();
 
   if (error) throw new Error(error.message);
@@ -101,7 +101,7 @@ export async function supabaseUpdateSignalImport(
     .from("signal_imports")
     .update(recordToRow(record))
     .eq("id", record.id)
-    .eq("tenant_id", DEFAULT_TENANT_ID)
+    .eq("tenant_id", getTenantId())
     .select("*")
     .single();
 
@@ -115,7 +115,7 @@ export async function supabaseSkipAllPendingSignalImports(
   const { data, error } = await getClient()
     .from("signal_imports")
     .update({ status: "skipped", reviewed_at: reviewedAt })
-    .eq("tenant_id", DEFAULT_TENANT_ID)
+    .eq("tenant_id", getTenantId())
     .eq("status", "pending")
     .select("id");
 
@@ -124,7 +124,7 @@ export async function supabaseSkipAllPendingSignalImports(
 }
 
 export async function supabaseCountPendingSignalImports(
-  tenantId: string = DEFAULT_TENANT_ID,
+  tenantId: string = getTenantId(),
 ): Promise<number> {
   const { count, error } = await getClient()
     .from("signal_imports")

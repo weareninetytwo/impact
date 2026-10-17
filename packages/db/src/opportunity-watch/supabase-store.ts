@@ -1,5 +1,5 @@
 import type { OpportunityWatchRun } from "@impact/shared";
-import { DEFAULT_TENANT_ID } from "@impact/shared";
+import { getTenantId } from "@impact/shared";
 import { createServerClient } from "../client";
 
 type Row = {
@@ -62,7 +62,7 @@ export async function supabaseListOpportunityWatchRuns(
   const { data, error } = await getClient()
     .from("opportunity_watch_runs")
     .select("*")
-    .eq("tenant_id", DEFAULT_TENANT_ID)
+    .eq("tenant_id", getTenantId())
     .order("started_at", { ascending: false })
     .limit(limit);
 

@@ -3,7 +3,7 @@ import type {
   PipelineArtifact,
   PipelineArtifactType,
 } from "@impact/shared";
-import { DEFAULT_TENANT_ID } from "@impact/shared";
+import { getTenantId } from "@impact/shared";
 import { isSupabasePersistenceEnabled } from "../client";
 import {
   readPipelineStore,
@@ -27,7 +27,7 @@ function buildArtifact(
   const ts = nowIso();
   return {
     id: input.id ?? randomUUID(),
-    tenant_id: DEFAULT_TENANT_ID,
+    tenant_id: getTenantId(),
     opportunity_id: input.opportunity_id,
     artifact_type: input.artifact_type,
     title: input.title,

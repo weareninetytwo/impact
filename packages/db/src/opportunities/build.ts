@@ -1,6 +1,6 @@
 import { randomUUID } from "crypto";
 import type { Opportunity, OpportunityInput } from "@impact/shared";
-import { DEFAULT_TENANT_ID } from "@impact/shared";
+import { getTenantId } from "@impact/shared";
 import { scoreOpportunity, type ScoringResult } from "@impact/engines";
 
 function clamp(n: number, min = 0, max = 100): number {
@@ -41,7 +41,7 @@ export function buildOpportunityRecord(
 
   return {
     id: existing?.id ?? randomUUID(),
-    tenant_id: existing?.tenant_id ?? options?.tenantId ?? DEFAULT_TENANT_ID,
+    tenant_id: existing?.tenant_id ?? options?.tenantId ?? getTenantId(),
     company_name: input.company_name.trim(),
     company_website: input.company_website?.trim() || null,
     title: input.title.trim(),

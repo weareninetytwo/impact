@@ -4,7 +4,7 @@ import type {
   QuoteStatus,
   FollowUpStatus,
 } from "@impact/shared";
-import { DEFAULT_TENANT_ID } from "@impact/shared";
+import { getTenantId } from "@impact/shared";
 import { createServerClient } from "../client";
 
 type QuoteRow = Omit<Quote, "amount"> & { amount: number | string | null };
@@ -27,7 +27,7 @@ export async function supabaseListQuotes(): Promise<Quote[]> {
   const { data, error } = await getClient()
     .from("quotes")
     .select("*")
-    .eq("tenant_id", DEFAULT_TENANT_ID)
+    .eq("tenant_id", getTenantId())
     .order("quote_sent_at", { ascending: false });
 
   if (error) throw new Error(error.message);
@@ -51,7 +51,7 @@ export async function supabaseFindQuoteByExternalRef(
   const { data, error } = await getClient()
     .from("quotes")
     .select("*")
-    .eq("tenant_id", DEFAULT_TENANT_ID)
+    .eq("tenant_id", getTenantId())
     .eq("external_ref", externalRef)
     .maybeSingle();
 
@@ -103,7 +103,7 @@ export async function supabaseListFollowUps(): Promise<QuoteFollowUp[]> {
   const { data, error } = await getClient()
     .from("quote_follow_ups")
     .select("*")
-    .eq("tenant_id", DEFAULT_TENANT_ID)
+    .eq("tenant_id", getTenantId())
     .order("due_at", { ascending: true });
 
   if (error) throw new Error(error.message);

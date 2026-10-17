@@ -4,6 +4,7 @@ import type {
   OpportunityStage,
   SignalType,
 } from "@impact/shared";
+import { getScoringConfig, type ScoringConfig } from "./scoring-config";
 
 export interface ScoringInput extends OpportunityInput {
   industry?: string | null;
@@ -21,56 +22,35 @@ export interface ScoringResult {
   suggested_stage: OpportunityStage;
 }
 
-const FIT_BY_SIGNAL: Record<SignalType, number> = {
-  rfp: 92,
-  expansion: 88,
-  signage: 86,
-  website_redesign: 84,
-  funding: 82,
-  agency_partner: 78,
-  apollo: 72,
-  news: 68,
-  hiring: 62,
-  other: 50,
-};
-
-const OFFER_BY_SIGNAL: Partial<Record<SignalType, string>> = {
-  rfp: "Custom Enterprise / RFP Pursuit",
-  expansion: "Brand Rollout Package",
-  signage: "Signage + Environmental Graphics",
-  website_redesign: "Website Audit / Redesign Sprint",
-  funding: "Brand Strategy Sprint",
-  agency_partner: "White-label Partner Program",
-  hiring: "Employer Brand / Recruiting Campaign",
-  apollo: "Brand Strategy Sprint",
-  news: "Brand Strategy Sprint",
-  other: "Brand Strategy Sprint",
-};
-
 function clamp(n: number, min = 0, max = 100): number {
   return Math.min(max, Math.max(min, n));
 }
 
-function scoreValue(estimatedValue: number | null | undefined): number {
-  if (estimatedValue == null || Number.isNaN(estimatedValue)) return 42;
-  if (estimatedValue >= 150000) return 95;
-  if (estimatedValue >= 100000) return 88;
-  if (estimatedValue >= 50000) return 75;
-  if (estimatedValue >= 25000) return 62;
-  if (estimatedValue >= 10000) return 48;
-  return 28;
+function scoreValue(
+  estimatedValue: number | null | undefined,
+  config: ScoringConfig,
+): number {
+  if (estimatedValue == null || Number.isNaN(estimatedValue)) {
+    return config.valueUnknownScore;
+  }
+  for (const tier of config.valueTiers) {
+    if (estimatedValue >= tier.min) return tier.score;
+  }
+  return config.valueFloorScore;
 }
 
-function scoreUrgency(deadline: string | null | undefined): number {
-  if (!deadline) return 38;
+function scoreUrgency(
+  deadline: string | null | undefined,
+  config: ScoringConfig,
+): number {
+  if (!deadline) return config.urgencyNoDeadlineScore;
   const days = (new Date(deadline).getTime() - Date.now()) / (1000 * 60 * 60 * 24);
-  if (Number.isNaN(days)) return 38;
-  if (days < 0) return 90;
-  if (days <= 7) return 95;
-  if (days <= 14) return 85;
-  if (days <= 30) return 72;
-  if (days <= 90) return 55;
-  return 40;
+  if (Number.isNaN(days)) return config.urgencyNoDeadlineScore;
+  if (days < 0) return config.urgencyOverdueScore;
+  for (const tier of config.urgencyTiers) {
+    if (days <= tier.maxDays) return tier.score;
+  }
+  return config.urgencyBeyondScore;
 }
 
 function scoreConfidence(input: ScoringInput): number {
@@ -83,27 +63,15 @@ function scoreConfidence(input: ScoringInput): number {
   return clamp(score);
 }
 
-function scoreFit(input: ScoringInput): number {
-  let base = FIT_BY_SIGNAL[input.signal_type] ?? 50;
+function scoreFit(input: ScoringInput, config: ScoringConfig): number {
+  let base = config.fitBySignal[input.signal_type] ?? config.fitFallback;
   const text = `${input.title} ${input.signal_summary ?? ""} ${input.notes ?? ""}`.toLowerCase();
 
-  const boostKeywords = [
-    "rebrand",
-    "brand",
-    "website",
-    "signage",
-    "rfp",
-    "rollout",
-    "fleet",
-    "identity",
-  ];
-  const penaltyKeywords = ["print only", "logo only", "free", "spec work", "student"];
-
-  for (const kw of boostKeywords) {
-    if (text.includes(kw)) base += 2;
+  for (const kw of config.boostKeywords) {
+    if (text.includes(kw)) base += config.boostPoints;
   }
-  for (const kw of penaltyKeywords) {
-    if (text.includes(kw)) base -= 8;
+  for (const kw of config.penaltyKeywords) {
+    if (text.includes(kw)) base -= config.penaltyPoints;
   }
 
   return clamp(base);
@@ -114,12 +82,13 @@ function assignGrade(
   fit: number,
   value: number,
   input: ScoringInput,
+  config: ScoringConfig,
 ): LeadGrade {
   const text = `${input.notes ?? ""} ${input.signal_summary ?? ""}`.toLowerCase();
   const tireKicker =
     text.includes("no budget") ||
     text.includes("tire kicker") ||
-    (input.estimated_value != null && input.estimated_value < 5000);
+    (input.estimated_value != null && input.estimated_value < config.tireKickerBelow);
 
   if (tireKicker || (fit < 35 && value < 35)) return "D";
   if (total >= 80 && fit >= 72 && value >= 60) return "A";
@@ -175,22 +144,28 @@ function suggestStage(grade: LeadGrade): OpportunityStage {
   }
 }
 
-/** Deterministic scoring — no AI agents in Epic 2 */
-export function scoreOpportunity(input: ScoringInput): ScoringResult {
-  const fit_score = scoreFit(input);
-  const urgency_score = scoreUrgency(input.deadline);
-  const value_score = scoreValue(input.estimated_value ?? null);
+/**
+ * Deterministic scoring — no AI agents in Epic 2.
+ * `config` defaults to the pack for `input.industry` (today: ninety two).
+ */
+export function scoreOpportunity(
+  input: ScoringInput,
+  config: ScoringConfig = getScoringConfig(input.industry),
+): ScoringResult {
+  const fit_score = scoreFit(input, config);
+  const urgency_score = scoreUrgency(input.deadline, config);
+  const value_score = scoreValue(input.estimated_value ?? null, config);
   const confidence_score = scoreConfidence(input);
 
   const total_score = clamp(
-    fit_score * 0.35 +
-      urgency_score * 0.25 +
-      value_score * 0.25 +
-      confidence_score * 0.15,
+    fit_score * config.weights.fit +
+      urgency_score * config.weights.urgency +
+      value_score * config.weights.value +
+      confidence_score * config.weights.confidence,
   );
 
-  const lead_grade = assignGrade(total_score, fit_score, value_score, input);
-  const offer = OFFER_BY_SIGNAL[input.signal_type] ?? "Brand Strategy Sprint";
+  const lead_grade = assignGrade(total_score, fit_score, value_score, input, config);
+  const offer = config.offerBySignal[input.signal_type] ?? config.defaultOffer;
   const recommended_action = recommendAction(lead_grade, input.signal_type, offer);
   const next_action = defaultNextAction(lead_grade, input.next_action);
   const suggested_stage = suggestStage(lead_grade);

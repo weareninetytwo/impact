@@ -1,5 +1,5 @@
 import type { Opportunity, OpportunityStage, ListOpportunitiesOptions } from "@impact/shared";
-import { DEFAULT_TENANT_ID } from "@impact/shared";
+import { getTenantId } from "@impact/shared";
 import { buildSignalIngestDedupeKey } from "@impact/engines";
 import { createServerClient } from "../client";
 
@@ -121,7 +121,7 @@ function supabaseErrorMessage(err: unknown): string {
 export async function supabaseListOpportunities(
   options?: ListOpportunitiesOptions,
 ): Promise<Opportunity[]> {
-  const tenantId = options?.tenantId ?? DEFAULT_TENANT_ID;
+  const tenantId = options?.tenantId ?? getTenantId();
   try {
     let query = getClient()
       .from("opportunity_records")
@@ -149,7 +149,7 @@ export async function supabaseGetOpportunity(
     .from("opportunity_records")
     .select("*")
     .eq("id", id)
-    .eq("tenant_id", DEFAULT_TENANT_ID)
+    .eq("tenant_id", getTenantId())
     .maybeSingle();
 
   if (error) throw new Error(error.message);
@@ -162,7 +162,7 @@ export async function supabaseFindByDedupeKey(
   const { data, error } = await getClient()
     .from("opportunity_records")
     .select("*")
-    .eq("tenant_id", DEFAULT_TENANT_ID)
+    .eq("tenant_id", getTenantId())
     .eq("dedupe_key", dedupeKey)
     .maybeSingle();
 
@@ -192,7 +192,7 @@ export async function supabaseUpdateOpportunity(
     .from("opportunity_records")
     .update(row)
     .eq("id", opp.id)
-    .eq("tenant_id", DEFAULT_TENANT_ID)
+    .eq("tenant_id", getTenantId())
     .select("*")
     .single();
 

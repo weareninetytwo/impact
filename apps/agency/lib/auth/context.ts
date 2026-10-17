@@ -1,4 +1,4 @@
-import { DEFAULT_TENANT_ID } from "@impact/shared";
+import { getTenantId } from "@impact/shared";
 import { getAuthSession } from "@/lib/auth/session";
 
 export interface RequestContext {
@@ -10,7 +10,7 @@ export interface RequestContext {
 export async function getRequestContext(): Promise<RequestContext> {
   const session = await getAuthSession();
   return {
-    tenantId: session?.tenantId ?? DEFAULT_TENANT_ID,
+    tenantId: session?.tenantId ?? getTenantId(),
     userId: session?.userId ?? null,
     role: session?.role ?? "owner",
   };

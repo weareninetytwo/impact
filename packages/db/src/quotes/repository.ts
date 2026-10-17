@@ -7,7 +7,7 @@ import type {
   QuoteInput,
   QuoteWithFollowUps,
 } from "@impact/shared";
-import { DEFAULT_TENANT_ID, FOLLOW_UP_SCHEDULE_DAYS } from "@impact/shared";
+import { FOLLOW_UP_SCHEDULE_DAYS, getTenantId } from "@impact/shared";
 import { buildFollowUpSequence } from "@impact/engines";
 import { randomUUID } from "crypto";
 import { isSupabasePersistenceEnabled } from "../client";
@@ -68,7 +68,7 @@ function buildQuoteRecords(input: QuoteInput): {
 
   const quote: Quote = {
     id: randomUUID(),
-    tenant_id: DEFAULT_TENANT_ID,
+    tenant_id: getTenantId(),
     customer_name: input.customer_name.trim(),
     company_name: cleanText(input.company_name),
     contact_email: cleanText(input.contact_email),
@@ -91,7 +91,7 @@ function buildQuoteRecords(input: QuoteInput): {
     getQuoteSenderName(),
   ).map((draft) => ({
     id: randomUUID(),
-    tenant_id: DEFAULT_TENANT_ID,
+    tenant_id: getTenantId(),
     quote_id: quote.id,
     step: draft.step,
     due_at: draft.due_at,

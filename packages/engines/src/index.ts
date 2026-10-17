@@ -31,3 +31,4 @@ export {
 } from "./automation/briefing";
 export { buildFollowUpSequence, buildFollowUpTemplate } from "./quote-follow-up";
 export type { FollowUpDraft } from "./quote-follow-up";
+export * from "./scoring-config";

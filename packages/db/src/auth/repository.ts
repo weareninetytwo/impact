@@ -1,4 +1,4 @@
-import { DEFAULT_TENANT_ID } from "@impact/shared";
+import { getTenantId } from "@impact/shared";
 import { createServerClient } from "../client";
 
 export interface TenantRecord {
@@ -118,7 +118,7 @@ export async function resolveDefaultTenantId(): Promise<string> {
   const slug =
     process.env.IMPACT_DEFAULT_TENANT_SLUG?.trim() || "ninety-two";
   const tenant = await getTenantBySlug(slug);
-  return tenant?.id ?? DEFAULT_TENANT_ID;
+  return tenant?.id ?? getTenantId();
 }
 
 function slugify(name: string): string {

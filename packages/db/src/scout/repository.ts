@@ -3,7 +3,7 @@ import type {
   ScoutSource,
   ScoutSourceInput,
 } from "@impact/shared";
-import { DEFAULT_TENANT_ID } from "@impact/shared";
+import { getTenantId } from "@impact/shared";
 import { randomUUID } from "crypto";
 import { isSupabasePersistenceEnabled } from "../client";
 import { SCOUT_SOURCE_PRESETS } from "./presets";
@@ -27,7 +27,7 @@ function buildSource(input: ScoutSourceInput): ScoutSource {
   const ts = nowIso();
   return {
     id: randomUUID(),
-    tenant_id: DEFAULT_TENANT_ID,
+    tenant_id: getTenantId(),
     name: input.name.trim(),
     source_type: input.source_type,
     url: input.url?.trim() || null,

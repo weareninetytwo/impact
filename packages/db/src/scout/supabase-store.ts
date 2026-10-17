@@ -1,5 +1,5 @@
 import type { ScoutRun, ScoutSource } from "@impact/shared";
-import { DEFAULT_TENANT_ID } from "@impact/shared";
+import { getTenantId } from "@impact/shared";
 import { createServerClient } from "../client";
 
 type SourceRow = {
@@ -53,7 +53,7 @@ export async function supabaseListScoutSources(): Promise<ScoutSource[]> {
   const { data, error } = await getClient()
     .from("scout_sources")
     .select("*")
-    .eq("tenant_id", DEFAULT_TENANT_ID)
+    .eq("tenant_id", getTenantId())
     .order("name", { ascending: true });
 
   if (error) throw new Error(error.message);
@@ -67,7 +67,7 @@ export async function supabaseGetScoutSource(
     .from("scout_sources")
     .select("*")
     .eq("id", id)
-    .eq("tenant_id", DEFAULT_TENANT_ID)
+    .eq("tenant_id", getTenantId())
     .maybeSingle();
 
   if (error) throw new Error(error.message);
@@ -95,7 +95,7 @@ export async function supabaseUpdateScoutSource(
     .from("scout_sources")
     .update({ ...patch, updated_at: new Date().toISOString() })
     .eq("id", id)
-    .eq("tenant_id", DEFAULT_TENANT_ID)
+    .eq("tenant_id", getTenantId())
     .select("*")
     .single();
 
@@ -163,7 +163,7 @@ export async function supabaseListEnabledScoutSources(): Promise<ScoutSource[]> 
   const { data, error } = await getClient()
     .from("scout_sources")
     .select("*")
-    .eq("tenant_id", DEFAULT_TENANT_ID)
+    .eq("tenant_id", getTenantId())
     .eq("enabled", true)
     .order("name", { ascending: true });
 

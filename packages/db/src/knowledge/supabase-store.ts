@@ -3,7 +3,7 @@ import type {
   KnowledgeItem,
   OpportunityKnowledgeLink,
 } from "@impact/shared";
-import { DEFAULT_TENANT_ID } from "@impact/shared";
+import { getTenantId } from "@impact/shared";
 import { createServerClient } from "../client";
 
 type ItemRow = {
@@ -57,7 +57,7 @@ export async function supabaseListKnowledgeItems(): Promise<KnowledgeItem[]> {
   const { data, error } = await getClient()
     .from("knowledge_items")
     .select("*")
-    .eq("tenant_id", DEFAULT_TENANT_ID)
+    .eq("tenant_id", getTenantId())
     .neq("source", "impact-pipeline")
     .order("updated_at", { ascending: false });
 
@@ -72,7 +72,7 @@ export async function supabaseGetKnowledgeItem(
     .from("knowledge_items")
     .select("*")
     .eq("id", id)
-    .eq("tenant_id", DEFAULT_TENANT_ID)
+    .eq("tenant_id", getTenantId())
     .maybeSingle();
 
   if (error) throw new Error(error.message);
@@ -101,7 +101,7 @@ export async function supabaseListAllChunks(): Promise<KnowledgeChunk[]> {
   const { data, error } = await getClient()
     .from("knowledge_chunks")
     .select("*")
-    .eq("tenant_id", DEFAULT_TENANT_ID);
+    .eq("tenant_id", getTenantId());
 
   if (error) throw new Error(error.message);
   return data as KnowledgeChunk[];
@@ -127,7 +127,7 @@ export async function supabaseListLinksForOpportunity(
     .from("opportunity_knowledge_links")
     .select("*")
     .eq("opportunity_id", opportunityId)
-    .eq("tenant_id", DEFAULT_TENANT_ID);
+    .eq("tenant_id", getTenantId());
 
   if (error) throw new Error(error.message);
   return data as LinkRow[];
@@ -140,7 +140,7 @@ export async function supabaseListLinksForKnowledgeItem(
     .from("opportunity_knowledge_links")
     .select("*")
     .eq("knowledge_item_id", knowledgeItemId)
-    .eq("tenant_id", DEFAULT_TENANT_ID);
+    .eq("tenant_id", getTenantId());
 
   if (error) throw new Error(error.message);
   return data as LinkRow[];
@@ -168,7 +168,7 @@ export async function supabaseDeleteLink(
     .delete()
     .eq("opportunity_id", opportunityId)
     .eq("knowledge_item_id", knowledgeItemId)
-    .eq("tenant_id", DEFAULT_TENANT_ID);
+    .eq("tenant_id", getTenantId());
 
   if (error) throw new Error(error.message);
 }

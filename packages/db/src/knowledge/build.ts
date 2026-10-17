@@ -5,14 +5,14 @@ import type {
   KnowledgeItem,
   OpportunityKnowledgeLink,
 } from "@impact/shared";
-import { DEFAULT_TENANT_ID } from "@impact/shared";
+import { getTenantId } from "@impact/shared";
 import { chunkText } from "./chunking";
 
 export function buildKnowledgeItem(input: KnowledgeInput): KnowledgeItem {
   const now = new Date().toISOString();
   return {
     id: randomUUID(),
-    tenant_id: DEFAULT_TENANT_ID,
+    tenant_id: getTenantId(),
     title: input.title.trim(),
     type: input.type,
     source: input.source?.trim() ?? "",
@@ -47,7 +47,7 @@ export function buildOpportunityLink(
 ): OpportunityKnowledgeLink {
   return {
     id: randomUUID(),
-    tenant_id: DEFAULT_TENANT_ID,
+    tenant_id: getTenantId(),
     opportunity_id: opportunityId,
     knowledge_item_id: knowledgeItemId,
     created_at: new Date().toISOString(),

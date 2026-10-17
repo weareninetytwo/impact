@@ -1,5 +1,5 @@
 import type { OpportunityWatchRun } from "@impact/shared";
-import { DEFAULT_TENANT_ID } from "@impact/shared";
+import { getTenantId } from "@impact/shared";
 import { randomUUID } from "crypto";
 import { isSupabasePersistenceEnabled } from "../client";
 import { readOpportunityWatchRuns, writeOpportunityWatchRuns } from "./store";
@@ -40,7 +40,7 @@ export async function getLatestOpportunityWatchRun(): Promise<OpportunityWatchRu
 export async function createOpportunityWatchRunRecord(): Promise<OpportunityWatchRun> {
   const run: OpportunityWatchRun = {
     id: randomUUID(),
-    tenant_id: DEFAULT_TENANT_ID,
+    tenant_id: getTenantId(),
     status: "running",
     sources_run: 0,
     found_count: 0,

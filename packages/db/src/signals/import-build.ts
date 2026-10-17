@@ -4,7 +4,7 @@ import type {
   SignalImportSource,
   SignalIngestItem,
 } from "@impact/shared";
-import { DEFAULT_TENANT_ID } from "@impact/shared";
+import { getTenantId } from "@impact/shared";
 import { buildOpportunityRecord } from "../opportunities/build";
 import { normalizeSignalType } from "./ingest-promote";
 
@@ -45,7 +45,7 @@ export function buildSignalImportRecord(
 
   return {
     id: randomUUID(),
-    tenant_id: DEFAULT_TENANT_ID,
+    tenant_id: getTenantId(),
     company_name: item.company_name.trim(),
     opportunity_title: item.opportunity_title.trim(),
     signal_type: item.signal_type.trim(),

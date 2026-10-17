@@ -1,5 +1,5 @@
 import type { PipelineArtifact, PipelineArtifactType } from "@impact/shared";
-import { DEFAULT_TENANT_ID } from "@impact/shared";
+import { getTenantId } from "@impact/shared";
 import { createServerClient } from "../client";
 
 const PIPELINE_SOURCE = "impact-pipeline";
@@ -60,7 +60,7 @@ async function listKnowledgePipelineRows(): Promise<KnowledgeRow[]> {
   const { data, error } = await getClient()
     .from("knowledge_items")
     .select("*")
-    .eq("tenant_id", DEFAULT_TENANT_ID)
+    .eq("tenant_id", getTenantId())
     .eq("source", PIPELINE_SOURCE)
     .order("created_at", { ascending: false });
 
