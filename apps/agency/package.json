@@ -11,6 +11,7 @@
     "test": "node --import tsx --test lib/scout/automation-auth.test.ts lib/scout/automation-run.test.ts"
   },
   "dependencies": {
+    "@anthropic-ai/sdk": "^0.134.0",
     "@impact/db": "*",
     "@impact/engines": "*",
     "@impact/shared": "*",

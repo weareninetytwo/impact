@@ -93,3 +93,18 @@ export {
   slugify,
 } from "./auth/repository";
 export type { TenantRecord, AppUserRecord } from "./auth/repository";
+export {
+  listQuotes,
+  createQuote,
+  importQuotes,
+  listDueFollowUps,
+  getFollowUpWithQuote,
+  updateFollowUpDraft,
+  markFollowUpSent,
+  skipFollowUp,
+  closeQuote,
+  getQuoteFollowUpStats,
+  getQuoteSenderName,
+  validateQuoteInput,
+} from "./quotes/repository";
+export type { QuoteImportResult } from "./quotes/repository";

@@ -29,3 +29,5 @@ export {
   buildOutreachDraftForOpportunity,
   isTestOpportunity,
 } from "./automation/briefing";
+export { buildFollowUpSequence, buildFollowUpTemplate } from "./quote-follow-up";
+export type { FollowUpDraft } from "./quote-follow-up";
