@@ -107,7 +107,7 @@ describe("scoreOpportunity golden behavior (ninety two default)", () => {
     assert.equal(r.suggested_stage, "skip");
   });
 
-  it("falls back to the Brand Strategy Sprint offer for a typeless lead", () => {
+  it("grades a typeless lead C and routes it to nurture", () => {
     const r = scoreOpportunity({
       company_name: "Misc",
       title: "Hello",
@@ -115,8 +115,34 @@ describe("scoreOpportunity golden behavior (ninety two default)", () => {
       estimated_value: 60000,
       deadline: new Date(FIXED_NOW + 5 * DAY).toISOString(),
     } as ScoringInput);
-    if (r.lead_grade === "A" || r.lead_grade === "B") {
-      assert.match(r.recommended_action, /Brand Strategy Sprint/);
+    // "other" has fit 50, so it can never reach A/B; the offer surfaces in the C action text
+    assert.equal(r.lead_grade, "C");
+    assert.match(r.recommended_action, /nurture/i);
+    assert.equal(r.suggested_stage, "nurturing");
+  });
+
+  it("routes every signal type to its configured offer on an A-grade lead", () => {
+    const expected: Record<string, string> = {
+      rfp: "Custom Enterprise / RFP Pursuit",
+      expansion: "Brand Rollout Package",
+      signage: "Signage + Environmental Graphics",
+      website_redesign: "Website Audit / Redesign Sprint",
+      funding: "Brand Strategy Sprint",
+      agency_partner: "White-label Partner Program",
+    };
+    for (const [signal_type, offer] of Object.entries(expected)) {
+      const r = scoreOpportunity({
+        company_name: "Acme",
+        title: "Rebrand and signage rollout",
+        signal_type,
+        signal_summary: "brand identity",
+        company_website: "https://acme.example",
+        source_url: "https://acme.example/news",
+        estimated_value: 120000,
+        deadline: new Date(FIXED_NOW + 5 * DAY).toISOString(),
+      } as ScoringInput);
+      assert.equal(r.lead_grade, "A", signal_type);
+      assert.ok(r.recommended_action.endsWith(offer), `${signal_type}: ${r.recommended_action}`);
     }
   });
 });
