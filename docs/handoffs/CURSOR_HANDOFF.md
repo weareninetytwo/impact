@@ -24,8 +24,8 @@ Before any implementation:
 - **Path:** `content/proposals/export/suny-morrisville/`
 - **Regenerate:** `node scripts/regenerate-proposal-package.mjs suny-morrisville`
 - **Legal:** `we are ninety two, inc. dba ninety two` (all lowercase)
-- **Pricing:** $225K total — $130K working media, $95K agency pool ($45K ninety two / $40K WBE target / $10K MBE-SDVOB)
-- **MWBE:** Linden = meeting requested, NOT confirmed
+- **Pricing:** [redacted: bid-specific detail removed from the public repo]
+- **MWBE:** [redacted: bid-specific detail removed from the public repo]
 - **Impact opp:** `9c2786f4-56a0-480e-ab8c-e1eb925f8697`
 
 ### Impact platform
@@ -55,7 +55,7 @@ Before any implementation:
 ## Prior sessions
 
 - Pricing transparency language updated (agency comp in fee line, not "no markup")
-- Executive audit: conditional GO on Morrisville bid pending EIN/forms/refs/Linden
+- Executive audit: conditional GO on the Morrisville bid pending open items
 - Project Intelligence docs + session roadmap files initiated
 
 ---

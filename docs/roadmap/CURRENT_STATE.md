@@ -37,8 +37,8 @@ See `docs/roadmap/NEXT_ACTIONS.md` for what to do next.
 | Item | Status |
 |------|--------|
 | Technical proposal PDF | ✅ ~13 pages, no dollar amounts |
-| Cost proposal PDF | ✅ $225K sealed envelope structure |
-| MWBE plan | ✅ Factual 6/30 outreach; Linden meeting requested, **not confirmed** |
+| Cost proposal PDF | ✅ [redacted: bid-specific detail removed from the public repo] |
+| MWBE plan | ✅ [redacted: bid-specific detail removed from the public repo] |
 | Legal entity | ✅ `we are ninety two, inc. dba ninety two` |
 | Print gate | ❌ EIN, signed forms, VendRep, reference auth |
 | Deadline | **July 7, 2026 · 1:00 PM EST** — hard copy to Morrisville |

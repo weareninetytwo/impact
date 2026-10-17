@@ -9,18 +9,18 @@
 
 ### SUNY Morrisville RFP 25-12 (deadline July 7)
 
-- [ ] Send `linden-scope-inquiry.txt` — lock WBE scope/quote (~$40K target)
-- [ ] Authorize references (FTS, Birddogs, Grist)
+- [ ] Lock WBE scope/quote ([redacted: bid-specific detail removed from the public repo])
+- [ ] Authorize references
 - [ ] Fill EIN + NYS Vendor ID on cost proposal / Summary Info Form
 - [ ] Sign SUNY Attachments 1–5 + Summary Information Form
 - [ ] File VendRep at portal.osc.state.ny.us
-- [ ] MWBE follow-up 7/1 (TGW, JazzCast, Swyftlight)
+- [ ] MWBE follow-up 7/1
 - [ ] Final PDF review → regenerate day-of print
 - [ ] Staples print ×3 technical, ×3 MWBE, ×1 cost sealed; USB; ship by **July 7 1 PM**
 
-### Buffalo Bills / Highmark (nurture)
+### Sports-partnership prospect (nurture)
 
-- [ ] Draft stadium activation outreach (Matt/Neal partnerships + Brian game presentation)
+- [ ] Draft partnership outreach ([redacted: contact names removed from the public repo])
 - [ ] Send from Gmail or copy from `/outreach` when OAuth live
 
 ### Epic 4.1 — Opportunity Brief (**next build, not shipped**)
@@ -32,7 +32,7 @@
 - [ ] Hook approve flow → queue brief generation
 - [ ] UI: `OpportunityBriefPanel` on `/opportunities/[id]`
 - [ ] Server action: refresh brief
-- [ ] Verify on Morrisville + Bills opps
+- [ ] Verify on the Morrisville and sports-partnership opps
 - [ ] typecheck + lint + build
 
 ---

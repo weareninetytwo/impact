@@ -19,7 +19,7 @@
 ### SUNY Morrisville RFP 25-12
 - Technical proposal refined: honest positioning, prime/sub model, no dollar amounts in technical PDF
 - Cost proposal: working media vs agency fee pool; removed "no markup" absolute language
-- MWBE: factual outreach; Linden not confirmed; good-faith targets only
+- MWBE: factual outreach only; good-faith targets only
 - Legal entity: `we are ninety two, inc. dba ninety two`
 
 ### Scout / Review
