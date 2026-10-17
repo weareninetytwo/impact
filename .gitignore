@@ -8,3 +8,6 @@ dist
 *.log
 .DS_Store
 .vercel
+
+# TypeScript build cache (was tracked; caused a conflict on every merge)
+*.tsbuildinfo

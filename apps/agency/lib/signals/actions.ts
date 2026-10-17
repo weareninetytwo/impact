@@ -12,6 +12,7 @@ import {
 } from "@impact/db";
 import type { SignalIngestPayload, SignalIngestResult } from "@impact/shared";
 import { revalidatePath } from "next/cache";
+import { getRequestContext } from "@/lib/auth/context";
 
 function revalidateSignalPaths() {
   revalidatePath("/opportunities");
@@ -27,7 +28,8 @@ export async function fetchPendingSignalImports() {
 }
 
 export async function fetchPendingImportCount() {
-  return countPendingSignalImports();
+  const ctx = await getRequestContext();
+  return countPendingSignalImports({ tenantId: ctx.tenantId });
 }
 
 export async function importSignalsAction(

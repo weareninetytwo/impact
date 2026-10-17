@@ -123,11 +123,13 @@ export async function supabaseSkipAllPendingSignalImports(
   return data?.length ?? 0;
 }
 
-export async function supabaseCountPendingSignalImports(): Promise<number> {
+export async function supabaseCountPendingSignalImports(
+  tenantId: string = DEFAULT_TENANT_ID,
+): Promise<number> {
   const { count, error } = await getClient()
     .from("signal_imports")
     .select("*", { count: "exact", head: true })
-    .eq("tenant_id", DEFAULT_TENANT_ID)
+    .eq("tenant_id", tenantId)
     .eq("status", "pending");
 
   if (error) throw new Error(error.message);

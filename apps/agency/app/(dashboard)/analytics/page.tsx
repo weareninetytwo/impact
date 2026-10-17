@@ -31,8 +31,8 @@ export default async function AnalyticsPage() {
           <h2 className={styles.cardTitle}>Pipeline</h2>
           <p className={styles.body}>
             Open opportunities: {stats.total} · A-grade: {stats.a_grade} · Ready
-            for outreach: {stats.ready_for_outreach} · Est. value: $
-            {stats.pipeline_value.toLocaleString()}
+            for outreach: {stats.ready_for_outreach} · Est. open pipeline: $
+            {stats.open_estimated_pipeline.toLocaleString()}
           </p>
         </article>
 

@@ -108,6 +108,7 @@ export interface DashboardStats {
   a_grade: number;
   ready_for_outreach: number;
   needs_contact: number;
-  proposals_due: number;
-  pipeline_value: number;
+  nurturing_count: number;
+  in_proposal: number;
+  open_estimated_pipeline: number;
 }
