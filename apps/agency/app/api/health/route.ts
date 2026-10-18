@@ -1,8 +1,14 @@
 import { createServerClient, isSupabasePersistenceEnabled } from "@impact/db";
 import { NextResponse } from "next/server";
+import { verifyScoutAuth } from "@/lib/scout/scout-auth";
+import { buildHealthResponse } from "@/lib/health";
 
-/** Safe production diagnostics (no secrets). Protected by basic auth middleware. */
-export async function GET() {
+/**
+ * Public liveness check. Diagnostics (key format, project host, raw DB errors)
+ * are returned only to callers presenting IMPACT_SCOUT_SECRET as a Bearer token.
+ */
+export async function GET(request: Request) {
+  const privileged = verifyScoutAuth(request.headers.get("authorization"));
   const url =
     process.env["SUPABASE_URL"]?.trim() ||
     process.env["NEXT_PUBLIC_SUPABASE_URL"]?.trim() ||
@@ -48,12 +54,17 @@ export async function GET() {
     }
   }
 
-  return NextResponse.json({
-    persistence,
-    supabase,
-    detail,
-    keyHint,
-    urlHost: url ? new URL(url).host : null,
-    vercel: Boolean(process.env.VERCEL),
-  });
+  return NextResponse.json(
+    buildHealthResponse(
+      {
+        persistence,
+        supabase,
+        detail,
+        keyHint,
+        urlHost: url ? new URL(url).host : null,
+        vercel: Boolean(process.env.VERCEL),
+      },
+      privileged,
+    ),
+  );
 }

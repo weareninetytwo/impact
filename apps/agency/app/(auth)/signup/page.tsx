@@ -41,6 +41,11 @@ export default async function SignUpPage({
             />
           </label>
 
+          <label className={styles.field}>
+            Invite code
+            <input name="invite_code" required autoComplete="off" />
+          </label>
+
           <fieldset className={styles.fieldset}>
             <legend className={styles.legend}>Organization</legend>
             <label className={styles.radio}>

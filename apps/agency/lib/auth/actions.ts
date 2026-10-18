@@ -15,6 +15,7 @@ import {
 import { createSupabaseAdminClient } from "@/lib/auth/admin";
 import { createSupabaseServerClient } from "@/lib/supabase/server";
 import { isSupabaseAuthEnabled } from "@/lib/supabase/env";
+import { isSignupInviteValid } from "@/lib/auth/signup-invite";
 
 export async function syncAppUserAfterLogin() {
   if (!isSupabaseAuthEnabled()) return;
@@ -106,6 +107,12 @@ export async function signUpAction(formData: FormData) {
     const mode = String(formData.get("mode") ?? "join");
     const orgName = String(formData.get("org_name") ?? "").trim();
     const tenantSlug = String(formData.get("tenant_slug") ?? "").trim();
+
+    if (!isSignupInviteValid(String(formData.get("invite_code") ?? ""))) {
+      redirectAuth("/signup", {
+        error: "A valid invite code is required to create an account",
+      });
+    }
 
     if (!fullName || !email || !password) {
       redirectAuth("/signup", {

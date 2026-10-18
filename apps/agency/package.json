@@ -8,7 +8,7 @@
     "start": "next start",
     "lint": "next lint",
     "typecheck": "tsc --noEmit",
-    "test": "node --import tsx --test lib/scout/automation-auth.test.ts lib/scout/automation-run.test.ts"
+    "test": "node --import tsx --test lib/scout/automation-auth.test.ts lib/scout/automation-run.test.ts lib/auth/signup-invite.test.ts lib/health.test.ts"
   },
   "dependencies": {
     "@anthropic-ai/sdk": "^0.134.0",
